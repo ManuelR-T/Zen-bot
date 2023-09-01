@@ -23,7 +23,7 @@ const handleNezMessage = async (message: Message): Promise<void> => {
     const lastMessageTime: Date = userDoc?.lastMessageTime || new Date()
 
     if (new Date().getTime() - lastMessageTime.getTime() < 1000 * 60) {
-      console.log('too soon')
+      console.warn('Two nose message in less than 60 sec')
       return
     }
 
