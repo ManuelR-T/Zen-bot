@@ -1,29 +1,36 @@
 import { Message } from 'discord.js'
-import { leaderboard } from './leaderboard'
+import { leaderboard, help, ping } from './actions/index'
+
+export const commandActions: {
+  [command: string]: {
+    action: (message: Message, args: string[]) => void
+    desc: string
+  }
+} = {
+  help: {
+    action: message => help(message),
+    desc: 'Displays the list of available commands',
+  },
+  ping: {
+    action: message => ping(message),
+    desc: "Checks the bot's latency",
+  },
+  leaderboard: {
+    action: (message, args) => leaderboard(message, args),
+    desc: 'Shows the leaderboard',
+  },
+}
 
 export const handleCommands = (
   message: Message,
   command: string,
   args: string[],
-): void => {
-  switch (command) {
-    case 'help':
-      message.reply('Commands: !help, !ping, !server, !leaderboard')
-      break
-    case 'ping':
-      message.reply(
-        `Pong! This message had a latency of ${
-          Date.now() - message.createdTimestamp
-        }ms.`,
-      )
-      break
-    case 'server':
-      message.reply(`This server's name is: ${message.guild?.name}`)
-      break
-    case 'leaderboard':
-      leaderboard(message, args)
-      break
-    default:
-      message.reply('Invalid command. Usage: !help')
+): string | null => {
+  if (commandActions[command]) {
+    commandActions[command].action(message, args)
+    return command
+  } else {
+    message.reply('Invalid command. Usage: !help')
+    return null
   }
 }

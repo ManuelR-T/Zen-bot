@@ -1,4 +1,4 @@
-import zenCountSchema from '../schemas/zenCountSchema'
+import zenCountSchema from '../../schemas/zenCountSchema'
 import { Message } from 'discord.js'
 
 const getLeaderboard = async (): Promise<string> => {
