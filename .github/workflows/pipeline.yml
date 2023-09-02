@@ -1,13 +1,13 @@
 name: Pipeline
 on: [push, pull_request]
 jobs:
-    quality:
-        name: Quality
-        uses: ./.github/workflows/quality.yml
-    deploy:
-        name: Deploy
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        needs: quality
-        uses: ./.github/workflows/fly.yml
-        secrets:
-            FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  quality:
+    name: Quality
+    uses: ./.github/workflows/quality.yml
+  deploy:
+    name: Deploy
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    needs: quality
+    uses: ./.github/workflows/fly.yml
+    secrets:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

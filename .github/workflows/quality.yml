@@ -32,4 +32,4 @@ jobs:
       - name: Run ESLint
         run: npm run lint
       - name: Check Prettier formatting
-        run: npx prettier --check "src/**/*.{js,ts}"
+        run: npm run prettier

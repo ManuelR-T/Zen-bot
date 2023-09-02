@@ -10,16 +10,19 @@ This project provides the structure for a Discord bot using the discord.js libra
 ## Setup
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url> discord-nose-bot
    ```
 
 2. Navigate to the project directory:
+
    ```bash
    cd discord-nose-bot
    ```
 
 3. Install the required dependencies:
+
    ```bash
    npm install
    ```
@@ -33,26 +36,31 @@ This project provides the structure for a Discord bot using the discord.js libra
 ## Available Scripts
 
 - **Build**: Compiles the TypeScript files.
+
   ```bash
   npm run build
   ```
 
 - **Start**: Runs the compiled JavaScript code.
+
   ```bash
   npm start
   ```
 
 - **Fast**: Removes the `dist` directory, compiles the TypeScript files, and then runs the bot.
+
   ```bash
   npm run fast
   ```
 
 - **Dev**: Starts the bot in development mode using nodemon and ts-node.
+
   ```bash
   npm run dev
   ```
 
 - **Lint**: Lints the codebase using ESLint.
+
   ```bash
   npm run lint
   ```
@@ -65,6 +73,7 @@ This project provides the structure for a Discord bot using the discord.js libra
 ## Libraries and Dependencies
 
 - **Core**:
+
   - [discord.js](https://discord.js.org/): For interacting with the Discord API.
   - [dotenv](https://www.npmjs.com/package/dotenv): To load environment variables from a `.env` file.
   - [mongodb](https://www.npmjs.com/package/mongodb): MongoDB driver for Node.js.
@@ -83,4 +92,3 @@ If you wish to contribute to the project, please follow the standard GitHub pull
 3. Make your changes.
 4. Push your changes to your fork.
 5. Submit a pull request.
-
