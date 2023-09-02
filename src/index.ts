@@ -6,11 +6,12 @@ import zenCountSchema from './schemas/zenCountSchema'
 
 const isMirrorTime = (): boolean => {
   const now = new Date()
-  return now.getHours() === now.getMinutes()
+  const gmt = now.getTimezoneOffset() / 60
+  return now.getHours() === now.getMinutes() + 2 - gmt
 }
 
 const handleNezMessage = async (message: Message): Promise<void> => {
-  if (!isMirrorTime()) return;
+  if (!isMirrorTime()) return
 
   const content = message.content.toLowerCase()
 
@@ -20,10 +21,12 @@ const handleNezMessage = async (message: Message): Promise<void> => {
     const userDoc = await zenCountSchema
       .findOne({ _id: message.author.id })
       .exec()
-    const lastMessageTime: Date = userDoc?.lastMessageTime || new Date()
+    const lastMessageTime: Date = userDoc?.lastMessageTime || new Date(0)
 
     if (new Date().getTime() - lastMessageTime.getTime() < 1000 * 60) {
-      console.warn('Two nose message in less than 60 sec')
+      console.log('actual time: ' + new Date())
+      console.log('last message time: ' + lastMessageTime)
+      console.warn('❌ ' + 'Two nose message in less than 60 sec')
       return
     }
 
@@ -33,8 +36,9 @@ const handleNezMessage = async (message: Message): Promise<void> => {
       { upsert: true, new: true },
     )
   } catch (error) {
-    console.error('Error handling Nez message:', error)
+    console.error('❌ ' + 'Error handling Nez message:', error)
   }
+  message.react('👃')
 }
 
 const splitCommand = (message: string): { command: string; args: string[] } => {

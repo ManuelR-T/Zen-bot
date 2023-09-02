@@ -3,18 +3,18 @@ import { Schema, model, models } from 'mongoose'
 const zenCountSchema = new Schema({
   _id: {
     type: String,
-    required: true
+    required: true,
   },
   count: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
   },
   lastMessageTime: {
     type: Date,
     required: true,
-    default: new Date(0)
-  }
+    default: new Date(0),
+  },
 })
 
 const name = 'ZenCountSchema'
