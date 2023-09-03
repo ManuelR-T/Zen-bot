@@ -16,4 +16,3 @@ export const help = (message: Message): void => {
     })
   message.channel.send({ embeds: [embed] })
 }
-
