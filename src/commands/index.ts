@@ -1,5 +1,5 @@
 import { Message } from 'discord.js'
-import { leaderboard, help, ping } from './actions/index'
+import { leaderboard, help, ping, github } from './actions'
 
 export const commandActions: {
   [command: string]: {
@@ -18,6 +18,10 @@ export const commandActions: {
   leaderboard: {
     action: (message, args) => leaderboard(message, args),
     desc: 'Shows the leaderboard',
+  },
+  github: {
+    action: message => github(message),
+    desc: 'Shows the github repo',
   },
 }
 

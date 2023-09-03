@@ -23,7 +23,10 @@ const getLeaderboard = async (): Promise<
   })
 }
 
-const leaderboard = async (message: Message, args: string[]): Promise<void> => {
+export const leaderboard = async (
+  message: Message,
+  args: string[],
+): Promise<void> => {
   if (args.length > 0) {
     message.reply('Invalid command. Usage: !leaderboard')
     return
@@ -50,5 +53,3 @@ const leaderboard = async (message: Message, args: string[]): Promise<void> => {
     console.error('Error getting leaderboard:', error)
   }
 }
-
-export { leaderboard }
