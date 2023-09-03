@@ -25,9 +25,6 @@ export const initializeBot = (
     process.exit(1)
   }
   console.log('ℹ️  ' + 'Tune the discord bot')
-  client.user?.setAvatar(
-    'https://t3.ftcdn.net/jpg/04/30/88/00/360_F_430880079_xhvaasQ8uUeP7PyYLDY8jwZvQ3mekZFY.jpg'
-  )
 
   setUserActivity()
   setInterval(setUserActivity, 10000)
