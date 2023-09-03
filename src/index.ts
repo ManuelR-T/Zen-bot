@@ -73,6 +73,5 @@ const handleMessages = async (message: Message): Promise<void> => {
     handleNezMessage(message)
   }
 }
-
 client.on('ready', () => initializeBot(handleMessages))
 client.login(TOKEN)

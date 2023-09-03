@@ -1,5 +1,6 @@
 import { Client, Message, GatewayIntentBits, ActivityType } from 'discord.js'
 import { MONGO_URI } from './config'
+import { commandActions } from './commands'
 import mongoose from 'mongoose'
 
 export const client = new Client({
@@ -10,16 +11,28 @@ export const client = new Client({
   ],
 })
 
+import { ImageURLOptions } from 'discord.js'
+
 export const initializeBot = (
   handleMessages: (message: Message) => Promise<void>,
 ): void => {
   if (!client) {
-    console.error('Failed to create client.')
+    console.error('❌ ' + 'Failed to create client.')
     process.exit(1)
   }
-  setUserActivity()
-  connectToMongoDB()
+  if (!client.user) {
+    console.error('❌ ' + 'Failed to get user.')
+    process.exit(1)
+  }
+  console.log('ℹ️  ' + 'Tune the discord bot')
+  client.user?.setAvatar(
+    'https://t3.ftcdn.net/jpg/04/30/88/00/360_F_430880079_xhvaasQ8uUeP7PyYLDY8jwZvQ3mekZFY.jpg'
+  )
 
+  setUserActivity()
+  setInterval(setUserActivity, 10000)
+  console.log('✅ ' + 'Bot is ready! (' + client?.user?.tag + ')')
+  connectToMongoDB()
   client.on('messageCreate', handleMessages)
 }
 
@@ -35,12 +48,17 @@ const connectToMongoDB = (): void => {
 }
 
 const setUserActivity = (): void => {
-  console.log('ℹ️  ' + 'Tune the discord bot')
   if (!client.user) {
     console.error('❌ ' + 'Failed to get user.')
     process.exit(1)
   }
+  const status = Object.keys(commandActions).map(
+    cmd => '!' + cmd + ': ' + commandActions[cmd].desc,
+  )
+  const random = Math.floor(Math.random() * (status.length - 1) * 2)
+  const randomStatus =
+    random > status.length ? status[0] : status[random % status.length]
   client.user.setStatus('online')
-  client.user.setActivity('Commands: !help', { type: ActivityType.Custom })
-  console.log('✅ ' + 'Bot is ready! (' + client.user.tag + ')')
+  client.user.setActivity(randomStatus, { type: ActivityType.Custom })
+  console.log('ℹ️  ' + 'Set user activity to ' + randomStatus)
 }
