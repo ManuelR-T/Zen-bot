@@ -1,1 +1,1 @@
-export * from "./isMirorTime"
+export * from './isMirorTime'
