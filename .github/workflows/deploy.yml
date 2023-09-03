@@ -1,4 +1,4 @@
-name: Fly Deploy
+name: Deploy
 on:
   workflow_call:
     secrets:
@@ -6,7 +6,7 @@ on:
         required: true
 jobs:
   deploy:
-    name: Deploy app
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

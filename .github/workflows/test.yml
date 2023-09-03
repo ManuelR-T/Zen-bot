@@ -1,9 +1,9 @@
-name: Quality
+name: Test
 
 on: [workflow_call]
 jobs:
-  lint:
-    name: Lint
+  Test:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,7 +14,5 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm ci
-      - name: Run ESLint
-        run: npm run lint
-      - name: Check Prettier formatting
-        run: npm run prettier
+      - name: Test
+        run: npm test

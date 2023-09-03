@@ -1,13 +1,20 @@
 name: Pipeline
 on: [push]
 jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
   quality:
     name: Quality
     uses: ./.github/workflows/quality.yml
+  test:
+    name: Test
+    needs: build
+    uses: ./.github/workflows/test.yml
   deploy:
     name: Deploy
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    needs: quality
-    uses: ./.github/workflows/fly.yml
+    needs: [quality, test]
+    uses: ./.github/workflows/deploy.yml
     secrets:
       FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
