@@ -2,8 +2,8 @@ name: Test
 
 on: [workflow_call]
 jobs:
-  Test:
-    name: Build
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
