@@ -9,7 +9,7 @@ export const commandActions: {
 } = {
   help: {
     action: message => help(message),
-    desc: 'Displays the list of available commands',
+    desc: 'Displays the commands',
   },
   ping: {
     action: message => ping(message),
