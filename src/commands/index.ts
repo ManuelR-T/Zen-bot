@@ -21,7 +21,7 @@ export const commandActions: {
   },
 }
 
-export const handleCommands = (
+const handleCommands = (
   message: Message,
   command: string,
   args: string[],
@@ -34,3 +34,5 @@ export const handleCommands = (
     return null
   }
 }
+
+export default handleCommands
