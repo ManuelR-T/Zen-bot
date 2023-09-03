@@ -1,7 +1,8 @@
 import { Client, Message, GatewayIntentBits, ActivityType } from 'discord.js'
+import mongoose from 'mongoose'
+
 import { MONGO_URI } from './config'
 import { commandActions } from './event/commands'
-import mongoose from 'mongoose'
 
 export const client = new Client({
   intents: [

@@ -1,8 +1,9 @@
 import { Message } from 'discord.js'
+
 import { TOKEN, PREFIX } from './config'
-import { initializeBot, client } from './init'
 import { handleCommands, handleMessages }  from './event'
 import handleReaction from './event/reaction'
+import { initializeBot, client } from './init'
 
 const splitCommand = (message: string): { command: string; args: string[] } => {
   const args = message.slice(PREFIX.length).split(' ')

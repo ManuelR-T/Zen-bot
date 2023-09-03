@@ -1,6 +1,7 @@
 import { Message } from 'discord.js'
-import zenCountSchema from '../../schemas/zenCountSchema'
+
 import { NOSE } from '../../config'
+import zenCountSchema from '../../schemas/zenCountSchema'
 import { isMirrorTime } from '../../utils'
 
 export const handleNezMessage = async (message: Message): Promise<void> => {

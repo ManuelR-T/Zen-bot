@@ -1,4 +1,5 @@
 import { Message } from 'discord.js'
+
 import { leaderboard, help, ping, github } from './actions'
 
 export const commandActions: {
