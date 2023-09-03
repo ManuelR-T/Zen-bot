@@ -1,9 +1,14 @@
-import type { Config } from '@jest/types';
+import type { Config } from '@jest/types'
 
 const config: Config.InitialOptions = {
   verbose: true,
   transform: {
-  "^.+\\.tsx?$": "ts-jest",
+    '^.+\\.tsx?$': 'ts-jest',
   },
-};
-export default config;
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*test.ts',
+  ],
+}
+
+export default config

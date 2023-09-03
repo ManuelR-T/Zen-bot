@@ -1,5 +1,7 @@
 # Discord Bot Project
 
+![Coverage Status](https://coveralls.io/repos/github/ManuelR-T/Discord-nose-bot/badge.svg?branch=master)
+
 This project provides the structure for a Discord bot using the discord.js library, alongside MongoDB for database operations.
 
 ## Prerequisites
