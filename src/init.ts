@@ -11,8 +11,6 @@ export const client = new Client({
   ],
 })
 
-import { ImageURLOptions } from 'discord.js'
-
 export const initializeBot = (
   handleMessages: (message: Message) => Promise<void>,
 ): void => {

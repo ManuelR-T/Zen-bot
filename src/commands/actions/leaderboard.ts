@@ -12,13 +12,13 @@ const getLeaderboard = async (): Promise<
 
   return results.map((result, index) => {
     const rankIcon =
-      index < 3 ? ['🥇', '🥈', '🥉'][index] : ((index + 1).toString() + ".   ")
+      index < 3 ? ['🥇', '🥈', '🥉'][index] : (index + 1).toString() + '.   '
     return {
       name: `${rankIcon}          ${result.count} ${
         result.count === 1 ? 'time' : 'times'
       }`,
       value: `<@${result._id}> `,
-      inline: true
+      inline: true,
     }
   })
 }
