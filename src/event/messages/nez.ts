@@ -1,9 +1,9 @@
 import { Message } from 'discord.js'
-import zenCountSchema from '../schemas/zenCountSchema'
-import { NOSE } from '../config'
-import { isMirrorTime } from '../utils'
+import zenCountSchema from '../../schemas/zenCountSchema'
+import { NOSE } from '../../config'
+import { isMirrorTime } from '../../utils'
 
-const handleNezMessage = async (message: Message): Promise<void> => {
+export const handleNezMessage = async (message: Message): Promise<void> => {
   if (!isMirrorTime()) return
 
   const content = message.content.toLowerCase()
@@ -33,5 +33,3 @@ const handleNezMessage = async (message: Message): Promise<void> => {
   }
   message.react('👃')
 }
-
-export default handleNezMessage

@@ -1,8 +1,8 @@
 import { Message } from 'discord.js'
 import { TOKEN, PREFIX } from './config'
 import { initializeBot, client } from './init'
-import handleCommands from './commands/index'
-import handleMessages from './messages'
+import { handleCommands, handleMessages }  from './event'
+import handleReaction from './event/reaction'
 
 const splitCommand = (message: string): { command: string; args: string[] } => {
   const args = message.slice(PREFIX.length).split(' ')
@@ -20,5 +20,5 @@ const handleMessagesCommands = async (message: Message): Promise<void> => {
     handleMessages(message)
   }
 }
-client.on('ready', () => initializeBot(handleMessagesCommands))
+client.on('ready', () => initializeBot(handleMessagesCommands, handleReaction))
 client.login(TOKEN)

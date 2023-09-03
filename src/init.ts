@@ -1,6 +1,6 @@
 import { Client, Message, GatewayIntentBits, ActivityType } from 'discord.js'
 import { MONGO_URI } from './config'
-import { commandActions } from './commands'
+import { commandActions } from './event/commands'
 import mongoose from 'mongoose'
 
 export const client = new Client({
@@ -13,6 +13,7 @@ export const client = new Client({
 
 export const initializeBot = (
   handleMessages: (message: Message) => Promise<void>,
+  handleReaction: (message: Message) => Promise<void>,
 ): void => {
   if (!client) {
     console.error('❌ ' + 'Failed to create client.')
@@ -29,6 +30,7 @@ export const initializeBot = (
   console.log('✅ ' + 'Bot is ready! (' + client?.user?.tag + ')')
   connectToMongoDB()
   client.on('messageCreate', handleMessages)
+  client.on('reactionAdd', handleReaction)
 }
 
 const connectToMongoDB = (): void => {
