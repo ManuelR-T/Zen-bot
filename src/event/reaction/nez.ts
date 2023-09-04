@@ -4,15 +4,17 @@ import { MessageReaction, User } from 'discord.js'
 import zenCountSchema from '../../schemas/zenCountSchema'
 import { isMirrorTime } from '../../utils'
 
-export const handleNezReaction = async (reaction: MessageReaction,
-  user: User,): Promise<void> => {
+export const handleNezReaction = async (
+  reaction: MessageReaction,
+  user: User,
+): Promise<void> => {
   if (reaction?.message?.author?.id === undefined) return
   if (!isMirrorTime()) return
 
   const emote = reaction.emoji.name
 
   //if (emote === null || !NOSE.some(keyword => emote === keyword)) return
-  if (emote === null || emote !== '👃' ) return
+  if (emote === null || emote !== '👃') return
 
   try {
     const userDoc = await zenCountSchema
