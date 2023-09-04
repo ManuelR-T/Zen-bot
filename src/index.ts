@@ -1,7 +1,7 @@
 import { Message } from 'discord.js'
 
 import { TOKEN, PREFIX } from './config'
-import { handleCommands, handleMessages }  from './event'
+import { handleCommands, handleMessages } from './event'
 import handleReaction from './event/reaction'
 import { initializeBot, client } from './init'
 

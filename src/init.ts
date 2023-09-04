@@ -1,4 +1,13 @@
-import { Client, Message, GatewayIntentBits, ActivityType, MessageReaction, User, PartialMessageReaction, PartialUser } from 'discord.js'
+import {
+  Client,
+  Message,
+  GatewayIntentBits,
+  ActivityType,
+  MessageReaction,
+  User,
+  PartialMessageReaction,
+  PartialUser,
+} from 'discord.js'
 import mongoose from 'mongoose'
 
 import { MONGO_URI } from './config'
