@@ -1,4 +1,5 @@
 import { Message } from 'discord.js'
+
 import { leaderboard, help, ping, github } from './actions'
 
 export const commandActions: {
@@ -25,7 +26,7 @@ export const commandActions: {
   },
 }
 
-const handleCommands = (
+export const handleCommands = (
   message: Message,
   command: string,
   args: string[],
@@ -38,5 +39,3 @@ const handleCommands = (
     return null
   }
 }
-
-export default handleCommands

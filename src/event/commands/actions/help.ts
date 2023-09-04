@@ -1,4 +1,5 @@
 import { Message, EmbedBuilder } from 'discord.js'
+
 import { commandActions } from '../index'
 
 export const help = (message: Message): void => {

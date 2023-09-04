@@ -1,5 +1,6 @@
-import zenCountSchema from '../../schemas/zenCountSchema'
 import { Message, EmbedBuilder } from 'discord.js'
+
+import zenCountSchema from '../../../schemas/zenCountSchema'
 
 const getLeaderboard = async (): Promise<
   Array<{ name: string; value: string }>
