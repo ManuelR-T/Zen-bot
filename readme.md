@@ -31,8 +31,8 @@ This project provides the structure for a Discord bot using the discord.js libra
 
 4. Create a `.env` file at the root of the project to store your environment variables. For example:
    ```bash
-   DISCORD_TOKEN=YOUR_DISCORD_TOKEN
-   MONGODB_URI=YOUR_MONGODB_CONNECTION_STRING
+   TOKEN='YOUR_DISCORD_TOKEN'
+   MONGOD_URI='YOUR_MONGODB_CONNECTION_STRING'
    ```
 
 ## Available Scripts
