@@ -1,10 +1,28 @@
-import { MessageReaction, User } from 'discord.js'
+import { Events } from 'discord.js'
+import {
+  MessageReaction,
+  User,
+  PartialMessageReaction,
+  PartialUser,
+} from 'discord.js'
 
-//import { NOSE } from '../../config'
-import zenCountSchema from '../../schemas/zenCountSchema'
-import { isMirrorTime } from '../../utils'
+import { NOSE } from '../config'
+import zenCountSchema from '../schemas/zenCountSchema'
+import { isMirrorTime } from '../utils'
 
-export const handleNezReaction = async (
+export default {
+  name: Events.MessageReactionAdd,
+  execute: async (
+    reaction: MessageReaction | PartialMessageReaction,
+    user: User | PartialUser,
+  ): Promise<void> => {
+    if (user === null || user.partial || reaction === null || reaction.partial)
+      return
+    handleNezReaction(reaction, user)
+  },
+}
+
+const handleNezReaction = async (
   reaction: MessageReaction,
   user: User,
 ): Promise<void> => {
@@ -13,8 +31,7 @@ export const handleNezReaction = async (
 
   const emote = reaction.emoji.name
 
-  //if (emote === null || !NOSE.some(keyword => emote === keyword)) return
-  if (emote === null || emote !== '👃') return
+  if (emote === null || !NOSE.some(keyword => emote === keyword)) return
 
   try {
     const userDoc = await zenCountSchema
