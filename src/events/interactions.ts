@@ -5,8 +5,10 @@ import { MyClient } from '../type'
 
 export default {
   name: Events.InteractionCreate,
-  async execute(client: MyClient, interaction: Interaction) {
-    if (!interaction.isCommand()) return
+  async execute(interaction: Interaction) {
+    if (!interaction.isChatInputCommand()) return
+
+    const client = interaction.client as MyClient
 
     const command = client.commands.get(interaction.commandName)
 
