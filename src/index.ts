@@ -3,8 +3,8 @@ import { Message, Events } from 'discord.js'
 import { TOKEN } from './config'
 import { handleMessages } from './event'
 import handleReaction from './event/reaction'
-import { initializeBot, client } from './init'
 import { handleInteraction } from './handleInteraction'
+import { initializeBot, client } from './init'
 
 const handleMessagesCommands = async (message: Message): Promise<void> => {
   if (message.author.bot) return

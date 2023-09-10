@@ -1,7 +1,10 @@
-import { client } from './init'
 import { CacheType, Interaction } from 'discord.js'
 
-export const handleInteraction = async (interaction : Interaction<CacheType>) => {
+import { client } from './init'
+
+export const handleInteraction = async (
+  interaction: Interaction<CacheType>,
+) => {
   if (!interaction.isChatInputCommand()) return
 
   const command = client.commands.get(interaction.commandName)
