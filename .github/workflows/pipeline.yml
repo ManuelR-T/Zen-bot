@@ -39,3 +39,5 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets:
       FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      TOKEN: ${{ secrets.TOKEN }}
