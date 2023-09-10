@@ -1,19 +1,17 @@
-import {
-  Client,
-  Message,
-  GatewayIntentBits,
-  ActivityType,
-  MessageReaction,
-  User,
-  PartialMessageReaction,
-  PartialUser,
-} from 'discord.js'
+import fs from 'fs'
+import path from 'path'
+
+import { Client, GatewayIntentBits, Collection } from 'discord.js'
 import mongoose from 'mongoose'
 
 import { MONGO_URI } from './config'
-import { commandActions } from './event/commands'
+import { Command } from './index.d'
 
-export const client = new Client({
+class MyClient extends Client {
+  commands = new Collection<string, Command>()
+}
+
+export const client = new MyClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -22,13 +20,35 @@ export const client = new Client({
   ],
 })
 
-export const initializeBot = (
-  handleMessages: (message: Message) => Promise<void>,
-  handleReaction: (
-    reaction: MessageReaction | PartialMessageReaction,
-    user: User | PartialUser,
-  ) => Promise<void>,
-): void => {
+const loadCommands = async () => {
+  const commandFolders = fs.readdirSync(path.join(__dirname, 'commands'))
+  const foldersPath = path.join(__dirname, 'commands')
+  for (const folder of commandFolders) {
+    const commandsPath = path.join(foldersPath, folder)
+    const commandFiles = fs
+      .readdirSync(commandsPath)
+      .filter(file => file.endsWith('.js') || file.endsWith('.ts'))
+    for (const file of commandFiles) {
+      const filePath = path.join(commandsPath, file)
+      try {
+        const { default: command } = await import(filePath)
+        if ('data' in command && 'execute' in command) {
+          client.commands.set(command.data.name, command)
+        } else {
+          console.log(
+            `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
+          )
+        }
+      } catch (error) {
+        console.error(`[ERROR] Failed to load command at ${filePath}:`, error)
+      }
+    }
+  }
+}
+
+loadCommands()
+
+export const initializeBot = (): void => {
   if (!client) {
     console.error('❌ ' + 'Failed to create client.')
     process.exit(1)
@@ -43,8 +63,6 @@ export const initializeBot = (
   setInterval(setUserActivity, 10000)
   console.log('✅ ' + 'Bot is ready! (' + client?.user?.tag + ')')
   connectToMongoDB()
-  client.on('messageCreate', handleMessages)
-  client.on('messageReactionAdd', handleReaction)
 }
 
 const connectToMongoDB = (): void => {
@@ -63,13 +81,5 @@ const setUserActivity = (): void => {
     console.error('❌ ' + 'Failed to get user.')
     process.exit(1)
   }
-  const status = Object.keys(commandActions).map(
-    cmd => '!' + cmd + ': ' + commandActions[cmd].desc,
-  )
-  const random = Math.floor(Math.random() * (status.length - 1) * 2)
-  const randomStatus =
-    random > status.length ? status[0] : status[random % status.length]
   client.user.setStatus('online')
-  client.user.setActivity(randomStatus, { type: ActivityType.Custom })
-  console.log('ℹ️  ' + 'Set user activity to ' + randomStatus)
 }
