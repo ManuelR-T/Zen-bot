@@ -3,9 +3,9 @@ import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders'
 import zenCountSchema from '../../schemas/zenCountSchema'
 import { Command } from '../../type'
 
-const getLeaderboard = async (time:string): Promise<
-  Array<{ name: string; value: string }>
-> => {
+const getLeaderboard = async (
+  time: string,
+): Promise<Array<{ name: string; value: string }>> => {
   let sortfield = 'count'
   if (time === 'weekly') {
     sortfield = 'countWeek'
@@ -23,9 +23,7 @@ const getLeaderboard = async (time:string): Promise<
       index < 3 ? ['🥇', '🥈', '🥉'][index] : (index + 1).toString() + '.   '
     const count = result[sortfield]
     return {
-      name: `${rankIcon}          ${count} ${
-        count === 1 ? 'time' : 'times'
-      }`,
+      name: `${rankIcon}          ${count} ${count === 1 ? 'time' : 'times'}`,
       value: `<@${result._id}> `,
       inline: true,
     }
@@ -49,7 +47,9 @@ export default {
     ),
   async execute(interaction) {
     try {
-      const time = (interaction.options.get('time')?.value as string || undefined) ?? 'alltime'
+      const time =
+        ((interaction.options.get('time')?.value as string) || undefined) ??
+        'alltime'
       const leaderboardEntries = await getLeaderboard(time)
       if (leaderboardEntries.length === 0) {
         interaction.reply('No one has said "zen" yet!')
@@ -58,7 +58,9 @@ export default {
 
       const embed = new EmbedBuilder()
         .setColor(0x0099ff)
-        .setTitle('🏆 Zen Leaderboard' + (time === 'alltime' ? '' : ` (${time})`))
+        .setTitle(
+          '🏆 Zen Leaderboard' + (time === 'alltime' ? '' : ` (${time})`),
+        )
         .setFooter({
           text: 'Last updated',
         })
