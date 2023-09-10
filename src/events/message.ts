@@ -1,10 +1,18 @@
-import { Message } from 'discord.js'
+import { Events, Message } from 'discord.js'
 
-import { NOSE } from '../../config'
-import zenCountSchema from '../../schemas/zenCountSchema'
-import { isMirrorTime } from '../../utils'
+import { NOSE } from '../config'
+import zenCountSchema from '../schemas/zenCountSchema'
+import { isMirrorTime } from '../utils'
 
-export const handleNezMessage = async (message: Message): Promise<void> => {
+export default {
+  name: Events.MessageCreate,
+  execute: async (message: Message) => {
+    if (message.author.bot) return
+    handleNezMessage(message)
+  },
+}
+
+const handleNezMessage = async (message: Message): Promise<void> => {
   if (!isMirrorTime()) return
 
   const content = message.content.toLowerCase()

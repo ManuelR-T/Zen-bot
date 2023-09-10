@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders'
 
-import { Command } from '../../index.d'
 import zenCountSchema from '../../schemas/zenCountSchema'
+import { Command } from '../../type'
 
 const getLeaderboard = async (): Promise<
   Array<{ name: string; value: string }>
