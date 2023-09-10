@@ -1,18 +1,19 @@
-import { Message, Events } from 'discord.js'
+import { GatewayIntentBits } from 'discord.js'
 
 import { TOKEN } from './config'
-import { handleMessages } from './event'
-import handleReaction from './event/reaction'
-import { handleInteraction } from './handleInteraction'
-import { initializeBot, client } from './init'
+import { handleCommands, handleEvents } from './handlers'
+import { MyClient } from './type'
 
-const handleMessagesCommands = async (message: Message): Promise<void> => {
-  if (message.author.bot) return
-  handleMessages(message)
-}
+export const client = new MyClient({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.MessageContent,
+  ],
+})
 
-client.once(Events.ClientReady, () => initializeBot())
-client.on(Events.InteractionCreate, handleInteraction)
-client.on(Events.MessageCreate, handleMessagesCommands)
-client.on(Events.MessageReactionAdd, handleReaction)
+handleCommands(client)
+handleEvents(client)
+
 client.login(TOKEN)
