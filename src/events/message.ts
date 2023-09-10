@@ -34,7 +34,7 @@ const handleNezMessage = async (message: Message): Promise<void> => {
 
     await zenCountSchema.findOneAndUpdate(
       { _id: message.author.id },
-      { $inc: { count: 1 }, lastMessageTime: new Date() },
+      { $inc: { count: 1, countWeek: 1, countDay: 1 }, lastMessageTime: new Date() },
       { upsert: true, new: true },
     )
   } catch (error) {
