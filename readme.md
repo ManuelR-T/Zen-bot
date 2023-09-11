@@ -8,68 +8,58 @@ This project provides the structure for a Discord bot using the discord.js libra
 
 1. Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
 2. You should have a [MongoDB](https://www.mongodb.com/) server running to handle database operations.
+3. Create a [Discord application](https://discord.com/developers/applications) and add a bot to it. You can follow [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more information.
 
 ## Setup
 
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url> discord-nose-bot
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
+   git clone git@github.com:ManuelR-T/Discord-nose-bot.git discord-nose-bot
    cd discord-nose-bot
    ```
 
-3. Install the required dependencies:
+2. Install the required dependencies:
 
    ```bash
    npm install
    ```
 
-4. Create a `.env` file at the root of the project to store your environment variables. For example:
+3. Create a `.env` by copying the `.env.example` file:
+
    ```bash
-   TOKEN='YOUR_DISCORD_TOKEN'
-   MONGOD_URI='YOUR_MONGODB_CONNECTION_STRING'
+    cp .env.example .env
    ```
 
+4. Fill in the required environment variables in the `.env` file.
+
 ## Available Scripts
-
-- **Build**: Compiles the TypeScript files.
-
-  ```bash
-  npm run build
-  ```
-
-- **Start**: Runs the compiled JavaScript code.
-
-  ```bash
-  npm start
-  ```
-
-- **Fast**: Removes the `dist` directory, compiles the TypeScript files, and then runs the bot.
-
-  ```bash
-  npm run fast
-  ```
 
 - **Dev**: Starts the bot in development mode using nodemon and ts-node.
 
   ```bash
   npm run dev
   ```
+- **Commands**: Updates the commands of the Discord bot. (This can take up to an hour to take effect.)
+
+  ```bash
+  npm run commands:update
+  ```
+- **Test**: Runs the tests using Jest.
+
+  ```bash
+  npm test
+  ```
 
 - **Lint**: Lints the codebase using ESLint.
 
   ```bash
-  npm run lint
+  npm run lint:fix
   ```
 
 - **Prettier**: Formats the codebase using Prettier.
   ```bash
-  npm run prettier
+  npm run prettier:fix
   ```
 
 ## Libraries and Dependencies
