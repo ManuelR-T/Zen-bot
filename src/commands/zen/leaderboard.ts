@@ -43,10 +43,17 @@ export default {
           { name: 'All time', value: 'alltime' },
           { name: 'This week', value: 'weekly' },
           { name: 'Today', value: 'dayly' },
-        ),
+        )
+    )
+    .addBooleanOption(option =>
+      option
+        .setName('hidden')
+        .setDescription('Hide the command from other users.')
+        .setRequired(false)
     ),
   async execute(interaction) {
     try {
+      const hidden = interaction.options.get('hidden')?.value as boolean
       const time =
         ((interaction.options.get('time')?.value as string) || undefined) ??
         'alltime'
@@ -68,7 +75,7 @@ export default {
 
       embed.addFields(...leaderboardEntries)
 
-      await interaction.reply({ embeds: [embed] })
+      await interaction.reply({ embeds: [embed], ephemeral: hidden })
     } catch (error) {
       console.error('Error getting leaderboard:', error)
     }
