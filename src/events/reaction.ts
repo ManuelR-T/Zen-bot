@@ -48,7 +48,10 @@ const handleNezReaction = async (
 
     await zenCountSchema.findOneAndUpdate(
       { _id: user.id },
-      { $inc: { count: 1 }, lastMessageTime: new Date() },
+      {
+        $inc: { count: 1, countWeek: 1, countDay: 1 },
+        lastMessageTime: new Date(),
+      },
       { upsert: true, new: true },
     )
   } catch (error) {

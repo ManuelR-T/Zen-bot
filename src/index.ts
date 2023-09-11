@@ -1,6 +1,7 @@
 import { GatewayIntentBits } from 'discord.js'
 
 import { TOKEN } from './config'
+import cron from './cron'
 import { handleCommands, handleEvents } from './handlers'
 import { MyClient } from './type'
 
@@ -15,5 +16,6 @@ export const client = new MyClient({
 
 handleCommands(client)
 handleEvents(client)
+cron()
 
 client.login(TOKEN)
