@@ -10,6 +10,16 @@ const zenCountSchema = new Schema({
     required: true,
     default: 0,
   },
+  countDay: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  countWeek: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   lastMessageTime: {
     type: Date,
     required: true,
