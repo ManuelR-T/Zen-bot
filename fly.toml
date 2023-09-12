@@ -7,6 +7,8 @@ app = "polished-sun-6742"
 primary_region = "cdg"
 
 [build]
+  dockerfile = "/config/Dockerfile"
+  ignorefile = "/config/.dockerignore"
 
 [http_service]
   internal_port = 3000

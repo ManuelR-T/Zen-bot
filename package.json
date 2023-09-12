@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p config",
     "start": "node dist/index.js",
-    "fast": "rm -fR ./dist; tsc && node dist/index.js",
+    "fast": "rm -fR ./dist; tsc -p config && node dist/index.js",
     "dev": "nodemon --exec 'ts-node src/index.ts'",
     "commands:update": "ts-node ./src/deploy-commands.ts",
-    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
-    "lint:fix": "eslint --ignore-path .eslintignore --ext .js,.ts . --fix",
-    "prettier": "prettier --check src/**/*.{js,ts}",
-    "prettier:fix": "prettier --write src/**/*.{js,ts}",
-    "test": "jest"
+    "lint": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .js,.ts .",
+    "lint:fix": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .js,.ts . --fix",
+    "prettier": "prettier --config config/.prettierrc --check src/**/*.{js,ts}",
+    "prettier:fix": "prettier --config config/.prettierrc --write src/**/*.{js,ts}",
+    "test": "jest --config ./config/jest.config.ts"
   },
   "keywords": [],
   "author": "",
