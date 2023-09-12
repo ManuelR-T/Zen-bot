@@ -5,6 +5,7 @@ import { Command } from '../../type'
 
 const getLeaderboard = async (
   time: string,
+  userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
   let sortfield = 'count'
   if (time === 'weekly') {
@@ -15,7 +16,7 @@ const getLeaderboard = async (
   const results = await zenCountSchema
     .find({ [sortfield]: { $gt: 0 } })
     .sort({ [sortfield]: -1 })
-    .limit(10)
+    .limit(userNb)
     .exec()
 
   return results.map((result, index) => {
@@ -43,13 +44,23 @@ export default {
           { name: 'All time', value: 'alltime' },
           { name: 'This week', value: 'weekly' },
           { name: 'Today', value: 'dayly' },
+        ),
+    )
+    .addNumberOption(option =>
+      option
+        .setName('user_nb')
+        .setDescription(
+          'The number of users to show in the leaderboard. Min 1, max 20.',
         )
+        .setRequired(false)
+        .setMaxValue(20)
+        .setMinValue(1),
     )
     .addBooleanOption(option =>
       option
         .setName('hidden')
         .setDescription('Hide the command from other users.')
-        .setRequired(false)
+        .setRequired(false),
     ),
   async execute(interaction) {
     try {
@@ -57,7 +68,8 @@ export default {
       const time =
         ((interaction.options.get('time')?.value as string) || undefined) ??
         'alltime'
-      const leaderboardEntries = await getLeaderboard(time)
+      const userNb = interaction.options.get('user_nb')?.value as number | 10
+      const leaderboardEntries = await getLeaderboard(time, userNb)
       if (leaderboardEntries.length === 0) {
         interaction.reply('No one has said "zen" yet!')
         return
