@@ -10,7 +10,7 @@ const getLeaderboard = async (
   let sortfield = 'count'
   if (time === 'weekly') {
     sortfield = 'countWeek'
-  } else if (time === 'dayly') {
+  } else if (time === 'daily') {
     sortfield = 'countDay'
   }
   const results = await zenCountSchema
@@ -35,7 +35,7 @@ export default {
   data: new SlashCommandBuilder()
     .setName('leaderboard')
     .setDescription('Show the Zen leaderboard.')
-    .addStringOption(option =>
+    .addStringOption((option) =>
       option
         .setName('time')
         .setDescription('The time period to show the leaderboard for.')
@@ -43,10 +43,10 @@ export default {
         .addChoices(
           { name: 'All time', value: 'alltime' },
           { name: 'This week', value: 'weekly' },
-          { name: 'Today', value: 'dayly' },
+          { name: 'Today', value: 'daily' },
         ),
     )
-    .addNumberOption(option =>
+    .addNumberOption((option) =>
       option
         .setName('user_nb')
         .setDescription(
@@ -56,7 +56,7 @@ export default {
         .setMaxValue(20)
         .setMinValue(1),
     )
-    .addBooleanOption(option =>
+    .addBooleanOption((option) =>
       option
         .setName('hidden')
         .setDescription('Hide the command from other users.')
@@ -78,7 +78,9 @@ export default {
       const embed = new EmbedBuilder()
         .setColor(0x0099ff)
         .setTitle(
-          '🏆 Zen Leaderboard' + (time === 'alltime' ? '' : ` (${time})`),
+          '🏆 Zen Leaderboard' +
+            (userNb === 10 ? '' : ` TOP ${userNb}`) +
+            (time === 'alltime' ? '' : ` (${time})`),
         )
         .setFooter({
           text: 'Last updated',

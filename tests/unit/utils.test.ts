@@ -1,8 +1,6 @@
-import { isMirrorTime } from "../../src/utils";
-// This will reset all mocks after each test
-afterEach(() => {
-  jest.restoreAllMocks();
-});
+import { describe, test, expect } from 'bun:test'
+
+import { isMirrorTime } from '../../src/utils'
 
 describe('Mirror Time Tests', () => {
   test('isMirrorTime True', () => {

@@ -8,31 +8,39 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
       - name: Cache node_modules
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/bun.lockb') }}
       - name: Install dependencies (if cache miss)
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        run: bun install
       - name: Run ESLint
-        run: npm run lint
+        run: bun run lint
   format:
     name: Format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
       - name: Cache node_modules
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/bun.lockb') }}
       - name: Install dependencies (if cache miss)
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        run: bun install
       - name: Check Prettier formatting
-        run: npm run prettier
+        run: bun run prettier

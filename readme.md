@@ -1,12 +1,10 @@
 # Discord Bot Project
 
-![Coverage Status](https://coveralls.io/repos/github/ManuelR-T/Discord-nose-bot/badge.svg?branch=master)
-
 This project provides the structure for a Discord bot using the discord.js library, alongside MongoDB for database operations.
 
 ## Prerequisites
 
-1. Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
+1. Ensure you have [Node.js](https://nodejs.org/) & [Bun](https://bun.sh/) installed on your machine.
 2. You should have a [MongoDB](https://www.mongodb.com/) server running to handle database operations.
 3. Create a [Discord application](https://discord.com/developers/applications) and add a bot to it. You can follow [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more information.
 
@@ -22,7 +20,7 @@ This project provides the structure for a Discord bot using the discord.js libra
 2. Install the required dependencies:
 
    ```bash
-   npm install
+   bun install
    ```
 
 3. Create a `.env` by copying the `.env.example` file:
@@ -38,28 +36,28 @@ This project provides the structure for a Discord bot using the discord.js libra
 - **Dev**: Starts the bot in development mode using nodemon and ts-node.
 
   ```bash
-  npm run dev
+  bun run dev
   ```
 - **Commands**: Updates the commands of the Discord bot. (This can take up to an hour to take effect.)
 
   ```bash
-  npm run commands:update
+  bun run commands:update
   ```
 - **Test**: Runs the tests using Jest.
 
   ```bash
-  npm test
+  bun test
   ```
 
 - **Lint**: Lints the codebase using ESLint.
 
   ```bash
-  npm run lint:fix
+  bun run lint:fix
   ```
 
 - **Prettier**: Formats the codebase using Prettier.
   ```bash
-  npm run prettier:fix
+  bun run prettier:fix
   ```
 
 ## Libraries and Dependencies

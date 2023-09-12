@@ -8,7 +8,7 @@ import { MyClient } from '../type'
 const connectToMongoDB = (): void => {
   console.log('ℹ️  ' + 'Connecting to the Database')
   try {
-    mongoose.connect(MONGO_URI, { keepAlive: true })
+    mongoose.connect(MONGO_URI)
   } catch (err) {
     console.error('❌ ' + 'Failed to connect to MongoDB.')
     process.exit(1)

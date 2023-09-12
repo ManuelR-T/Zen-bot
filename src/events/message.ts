@@ -17,7 +17,7 @@ const handleNezMessage = async (message: Message): Promise<void> => {
 
   const content = message.content.toLowerCase()
 
-  if (!NOSE.some(keyword => content.includes(keyword))) return
+  if (!NOSE.some((keyword) => content.includes(keyword))) return
 
   try {
     const userDoc = await zenCountSchema

@@ -31,7 +31,7 @@ const handleNezReaction = async (
 
   const emote = reaction.emoji.name
 
-  if (emote === null || !NOSE.some(keyword => emote === keyword)) return
+  if (emote === null || !NOSE.some((keyword) => emote === keyword)) return
 
   try {
     const userDoc = await zenCountSchema

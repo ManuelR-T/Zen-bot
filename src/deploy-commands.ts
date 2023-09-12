@@ -14,7 +14,7 @@ const commandFolders = readdirSync(foldersPath)
 async function loadCommands() {
   for (const folder of commandFolders) {
     const commandsPath = join(foldersPath, folder)
-    const commandFiles = readdirSync(commandsPath).filter(file =>
+    const commandFiles = readdirSync(commandsPath).filter((file) =>
       file.endsWith('.ts'),
     )
 
