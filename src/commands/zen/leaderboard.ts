@@ -68,8 +68,8 @@ export default {
       const time =
         ((interaction.options.get('time')?.value as string) || undefined) ??
         'alltime'
-      const userNb = interaction.options.get('user_nb')?.value as number | 10
-      const leaderboardEntries = await getLeaderboard(time, userNb)
+        const userNb = (interaction.options.get('user_nb')?.value as number | 10) || 10
+        const leaderboardEntries = await getLeaderboard(time, userNb)
       if (leaderboardEntries.length === 0) {
         interaction.reply('No one has said "zen" yet!')
         return
