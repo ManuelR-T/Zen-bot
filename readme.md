@@ -43,7 +43,7 @@ This project provides the structure for a Discord bot using the discord.js libra
   ```bash
   bun run commands:update
   ```
-- **Test**: Runs the tests using Jest.
+- **Test**: Runs the tests.
 
   ```bash
   bun test
@@ -70,7 +70,6 @@ This project provides the structure for a Discord bot using the discord.js libra
   - [mongoose](https://mongoosejs.com/): Elegant MongoDB object modeling for Node.js.
 
 - **Development**:
-  - [nodemon](https://www.npmjs.com/package/nodemon): Utility to monitor changes in your source and automatically restart your server.
   - TypeScript, ESLint, Prettier: For type safety, linting, and code formatting respectively.
 
 ## Contributing

@@ -1,7 +1,8 @@
-import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder } from '@discordjs/builders'
 
 import zenCountSchema from '../../schemas/zenCountSchema'
 import { Command } from '../../type'
+import { newEmbedLeaderboard } from '../../utils'
 
 const updateStreaks = async () => {
   const users = await zenCountSchema.find({})
@@ -70,25 +71,19 @@ export default {
   async execute(interaction) {
     try {
       const hidden = interaction.options.get('hidden')?.value as boolean
-      const userNb =
-        (interaction.options.get('user_nb')?.value as number | 10) || 10
+      const userNb = interaction.options.get('user_nb')?.value as number | 10
       const leaderboardEntries = await getStreakLeaderboard(userNb)
       if (leaderboardEntries.length === 0) {
         interaction.reply('No one has any streaks yet!')
         return
       }
 
-      const embed = new EmbedBuilder()
-        .setColor(0x0099ff)
-        .setTitle(
-          '🔥 Streak Leaderboard 🔥' + (userNb === 10 ? '' : ` TOP ${userNb}`),
-        )
-        .setFooter({
-          text: 'Last updated',
-        })
-        .setTimestamp()
-
-      embed.addFields(...leaderboardEntries)
+      const embed = newEmbedLeaderboard({
+        title: '🔥 Streak Leaderboard 🔥',
+        leaderboardEntries,
+        userNb,
+        defaultUserNb: 10,
+      })
 
       await interaction.reply({ embeds: [embed], ephemeral: hidden })
     } catch (error) {

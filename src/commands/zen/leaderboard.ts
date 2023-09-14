@@ -1,7 +1,8 @@
-import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder } from '@discordjs/builders'
 
 import zenCountSchema from '../../schemas/zenCountSchema'
 import { Command } from '../../type'
+import { newEmbedLeaderboard } from '../../utils'
 
 const getLeaderboard = async (
   time: string,
@@ -68,27 +69,22 @@ export default {
       const time =
         ((interaction.options.get('time')?.value as string) || undefined) ??
         'alltime'
-      const userNb =
-        (interaction.options.get('user_nb')?.value as number | 10) || 10
+      const userNb = interaction.options.get('user_nb')?.value as number | 10
       const leaderboardEntries = await getLeaderboard(time, userNb)
       if (leaderboardEntries.length === 0) {
         interaction.reply('No one has said "zen" yet!')
         return
       }
 
-      const embed = new EmbedBuilder()
-        .setColor(0x0099ff)
-        .setTitle(
-          '🏆 Zen Leaderboard' +
-            (userNb === 10 ? '' : ` TOP ${userNb}`) +
-            (time === 'alltime' ? '' : ` (${time})`),
-        )
-        .setFooter({
-          text: 'Last updated',
-        })
-        .setTimestamp()
-
-      embed.addFields(...leaderboardEntries)
+      const embed = newEmbedLeaderboard({
+        title: '🏆 Zen Leaderboard 🏆',
+        leaderboardEntries,
+        time,
+        defaultTime: 'alltime',
+        userNb,
+        defaultUserNb: 10,
+        color: 0x0099ff,
+      })
 
       await interaction.reply({ embeds: [embed], ephemeral: hidden })
     } catch (error) {

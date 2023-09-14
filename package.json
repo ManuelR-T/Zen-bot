@@ -6,7 +6,7 @@
     "build": "tsc -p config",
     "start": "node dist/index.js",
     "fast": "rm -fR ./dist; tsc -p config && node dist/index.js",
-    "dev": "nodemon --exec 'bun src/index.ts'",
+    "dev": "bun --watch src/index.ts",
     "commands:update": "bun ./src/deploy-commands.ts",
     "lint": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts .",
     "lint:fix": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts . --fix",
@@ -39,7 +39,6 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.0.2",
     "eslint-plugin-promise": "^6.1.1",
-    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }

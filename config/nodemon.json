@@ -1,5 +1,0 @@
-{
-  "watch": ["src/**/*.ts", "src/**/*.json"],
-  "ext": "ts,json",
-  "exec": "bun src/index.ts"
-}
