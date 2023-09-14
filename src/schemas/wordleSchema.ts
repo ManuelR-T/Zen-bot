@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models } from 'mongoose'
 
 const wordleSchema = new Schema({
   _id: {
@@ -20,7 +20,7 @@ const wordleSchema = new Schema({
     required: true,
     default: 0,
   },
-});
+})
 
-const name = "WordleSchema";
-export default models[name] || model(name, wordleSchema);
+const name = 'WordleSchema'
+export default models[name] || model(name, wordleSchema)

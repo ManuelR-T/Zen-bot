@@ -5,6 +5,7 @@ import cron from './cron'
 import { handleCommands, handleEvents } from './handlers'
 import { MyClient } from './type'
 
+console.time('Startup time')
 export const client = new MyClient({
   intents: [
     GatewayIntentBits.Guilds,
