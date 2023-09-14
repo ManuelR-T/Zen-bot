@@ -70,7 +70,8 @@ export default {
   async execute(interaction) {
     try {
       const hidden = interaction.options.get('hidden')?.value as boolean
-      const userNb = (interaction.options.get('user_nb')?.value as number | 10) || 10
+      const userNb =
+        (interaction.options.get('user_nb')?.value as number | 10) || 10
       const leaderboardEntries = await getStreakLeaderboard(userNb)
       if (leaderboardEntries.length === 0) {
         interaction.reply('No one has any streaks yet!')
