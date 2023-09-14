@@ -19,17 +19,36 @@ const handleNezMessage = async (message: Message): Promise<void> => {
 
   if (!NOSE.some((keyword) => content.includes(keyword))) return
 
+  const currentTime = new Date().getTime()
   try {
     const userDoc = await zenCountSchema
       .findOne({ _id: message.author.id })
       .exec()
     const lastMessageTime: Date = userDoc?.lastMessageTime || new Date(0)
 
-    if (new Date().getTime() - lastMessageTime.getTime() < 1000 * 60) {
+    if (currentTime - lastMessageTime.getTime() < 1000 * 60) {
       console.log('actual time: ' + new Date())
       console.log('last message time: ' + lastMessageTime)
       console.warn('❌ ' + 'Two nose message in less than 60 sec')
       return
+    }
+
+    if (currentTime - lastMessageTime.getTime() < 1000 * 60 * 63) {
+      await zenCountSchema.findOneAndUpdate(
+        { _id: message.author.id },
+        {
+          $inc: { streak: 1 },
+        },
+        { upsert: true, new: true },
+      )
+    } else {
+      await zenCountSchema.findOneAndUpdate(
+        { _id: message.author.id },
+        {
+          $set: { streak: 1 },
+        },
+        { upsert: true, new: true },
+      )
     }
 
     await zenCountSchema.findOneAndUpdate(

@@ -25,6 +25,11 @@ const zenCountSchema = new Schema({
     required: true,
     default: new Date(0),
   },
+  streak: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 })
 
 const name = 'ZenCountSchema'

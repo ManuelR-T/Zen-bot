@@ -9,6 +9,7 @@ export const NOSE = [
   'nez',
   'zen',
   'nose',
+  'noz',
   '👃',
   '👃🏻',
   '👃🏼',
