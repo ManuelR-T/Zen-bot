@@ -4,23 +4,24 @@ import zenCountSchema from '../../schemas/zenCountSchema'
 import { Command } from '../../type'
 import { newEmbedLeaderboard } from '../../utils'
 
-const updateStreaks = async () => {
-  const users = await zenCountSchema.find({})
-  const currentTime = new Date().getTime()
-  const oneHourOneMinuteAgo = new Date(currentTime - 61 * 60 * 1000)
-
-  for (const user of users) {
-    if (user.lastMessageTime.getTime() < oneHourOneMinuteAgo) {
-      user.streak = 0
-      await user.save()
-    }
-  }
-}
-
 const getStreakLeaderboard = async (
   userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
-  await updateStreaks()
+  const currentTime = new Date().getTime()
+  const usersToMark = await zenCountSchema.find({
+    lastMessageTime: { $lt: currentTime - 61 * 1000 },
+    streak: { $gt: 0 },
+  })
+
+  setTimeout(async () => {
+    for (const user of usersToMark) {
+      const lastMessageTime = user.lastMessageTime.getTime()
+      if (lastMessageTime < currentTime - 61 * 1000) {
+        user.streak = 0
+        await user.save()
+      }
+    }
+  }, 60 * 1000)
 
   const results = await zenCountSchema
     .find({ streak: { $gt: 0 } })
@@ -41,7 +42,9 @@ const getStreakLeaderboard = async (
     }
 
     return {
-      name: `${emoji} ${streak} ${streak === 1 ? 'streak' : 'streaks'}`,
+      name: `${emoji} ${streak} ${
+        streak === 1 ? 'streak' : 'streaks'
+      } (best : ${result.bestStreak})`,
       value: `<@${result._id}> `,
       inline: true,
     }
