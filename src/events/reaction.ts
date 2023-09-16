@@ -1,5 +1,5 @@
-import { Events } from 'discord.js'
 import {
+  Events,
   MessageReaction,
   User,
   PartialMessageReaction,

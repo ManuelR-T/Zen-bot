@@ -49,15 +49,10 @@ This project provides the structure for a Discord bot using the discord.js libra
   bun test
   ```
 
-- **Lint**: Lints the codebase using ESLint.
+- **Lint**: Lints the codebase using ESLint with Prettier plugin.
 
   ```bash
   bun run lint:fix
-  ```
-
-- **Prettier**: Formats the codebase using Prettier.
-  ```bash
-  bun run prettier:fix
   ```
 
 ## Libraries and Dependencies
