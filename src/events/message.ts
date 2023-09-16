@@ -38,6 +38,7 @@ const handleNezMessage = async (message: Message): Promise<void> => {
         { _id: message.author.id },
         {
           $inc: { streak: 1 },
+          $max: { bestStreak: userDoc.streak + 1 },
         },
         { upsert: true, new: true },
       )

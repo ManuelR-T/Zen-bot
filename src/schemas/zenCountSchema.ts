@@ -30,6 +30,11 @@ const zenCountSchema = new Schema({
     required: true,
     default: 0,
   },
+  bestStreak: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 })
 
 const name = 'ZenCountSchema'
