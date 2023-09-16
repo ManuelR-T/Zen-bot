@@ -4,7 +4,7 @@ import zenCountSchema from '../../schemas/zenCountSchema'
 import { Command, CommandExecute } from '../../type'
 import { newEmbedLeaderboard } from '../../utils'
 
-const data =  new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
   .setName('leaderboard')
   .setDescription('Show the Zen leaderboard.')
   .addStringOption((option) =>
@@ -66,30 +66,30 @@ const execute: CommandExecute = async (interaction) => {
 
 const getLeaderboard = async (
   time: string,
-  userNb: number
+  userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
-  let sortfield = "count";
-  if (time === "weekly") {
-    sortfield = "countWeek";
-  } else if (time === "daily") {
-    sortfield = "countDay";
+  let sortfield = 'count'
+  if (time === 'weekly') {
+    sortfield = 'countWeek'
+  } else if (time === 'daily') {
+    sortfield = 'countDay'
   }
   const results = await zenCountSchema
     .find({ [sortfield]: { $gt: 0 } })
     .sort({ [sortfield]: -1 })
     .limit(userNb)
-    .exec();
+    .exec()
 
   return results.map((result, index) => {
     const rankIcon =
-      index < 3 ? ["🥇", "🥈", "🥉"][index] : (index + 1).toString() + ".   ";
-    const count = result[sortfield];
+      index < 3 ? ['🥇', '🥈', '🥉'][index] : (index + 1).toString() + '.   '
+    const count = result[sortfield]
     return {
-      name: `${rankIcon}          ${count} ${count === 1 ? "time" : "times"}`,
+      name: `${rankIcon}          ${count} ${count === 1 ? 'time' : 'times'}`,
       value: `<@${result._id}> `,
       inline: true,
-    };
-  });
-};
+    }
+  })
+}
 
 export default { data, execute } as Command

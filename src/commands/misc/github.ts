@@ -3,8 +3,8 @@ import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders'
 import { Command, CommandExecute } from '../../type'
 
 const data = new SlashCommandBuilder()
-    .setName('github')
-    .setDescription('Shows the github repo')
+  .setName('github')
+  .setDescription('Shows the github repo')
 
 const execute: CommandExecute = async (interaction) => {
   const embed = new EmbedBuilder()
@@ -23,4 +23,3 @@ const execute: CommandExecute = async (interaction) => {
 }
 
 export default { data, execute } as Command
-

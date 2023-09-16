@@ -100,4 +100,3 @@ export class WordleManager {
     this.games.clear()
   }
 }
-
