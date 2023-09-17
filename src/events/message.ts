@@ -70,7 +70,6 @@ const handleNezMessage = async (message: Message): Promise<void> => {
   } catch (error) {
     console.error('❌ ' + 'Error handling Nez message:', error)
   }
-  const isDevil =
-    currentDate.getSeconds() >= 55 && isFirstNose(currentDate)
+  const isDevil = currentDate.getSeconds() >= 55 && isFirstNose(currentDate)
   message.react(isDevil ? '😈' : '👃')
 }
