@@ -1,9 +1,10 @@
-import isWordValid from "./isWordValid"
+import isWordValid from './isWordValid'
 
 class Wordle {
   private targetWord: string
   private guessHistory: string[] = []
   private responseHistory: string[] = []
+  private wrongLetterHistory: string[] = []
   private guesses = 0
   constructor(targetWord: string) {
     this.targetWord = targetWord
@@ -27,8 +28,8 @@ class Wordle {
       throw 'You have already guessed this word'
     }
 
-    if (!(await isWordValid("./data/wordle_fr.txt", word))) {
-      throw "Invalid word";
+    if (!(await isWordValid('./data/wordle_fr.txt', word))) {
+      throw 'Invalid word'
     }
 
     this.guessHistory.push(word)
@@ -41,25 +42,35 @@ class Wordle {
         response += 'Y'
       } else {
         response += 'R'
+        if (!this.wrongLetterHistory.includes(word[i])) {
+          this.wrongLetterHistory.push(word[i])
+        }
       }
     }
 
     this.responseHistory.push(response)
     this.guesses++
 
-    //TODO: Create a wrong letter History
     return response
   }
 
-  getHistory(): [string[], string[]] {
-    return [this.guessHistory, this.responseHistory]
+  getHistories(): {
+    guesses: string[]
+    responses: string[]
+    wrongLetters: string[]
+  } {
+    return {
+      guesses: this.guessHistory,
+      responses: this.responseHistory,
+      wrongLetters: this.wrongLetterHistory,
+    }
   }
 }
 
-export class WordleManager {
+class WordleManager {
   private games: Map<string, Wordle> = new Map()
 
-  createGame(targetWord: string, gameId: string): string {
+  createGame(gameId: string, targetWord: string): string {
     this.games.set(gameId, new Wordle(targetWord))
     //TODO: Update database timestamp
     return gameId
@@ -77,15 +88,10 @@ export class WordleManager {
     return undefined
   }
 
-  async guess(gameId: string, word: string): Promise <string | undefined> {
+  async guess(gameId: string, word: string): Promise<string | undefined> {
     const game = this.games.get(gameId)
     if (game) {
-      try {
-        return await game.guess(word)
-      }
-      catch (error) {
-        throw error
-      }
+      return await game.guess(word)
     }
     return 'Invalid game ID'
   }
@@ -98,10 +104,17 @@ export class WordleManager {
     return undefined
   }
 
-  getHistory(gameId: string): [string[], string[]] | undefined {
+  getHistories(gameId: string):
+    | {
+        guesses: string[]
+        responses: string[]
+        wrongLetters: string[]
+      }
+    | undefined {
     const game = this.games.get(gameId)
+
     if (game) {
-      return game.getHistory()
+      return game.getHistories()
     }
     return undefined
   }
@@ -110,3 +123,7 @@ export class WordleManager {
     this.games.clear()
   }
 }
+
+const wordleManager = new WordleManager()
+
+export default wordleManager

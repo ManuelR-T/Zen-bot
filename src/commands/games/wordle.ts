@@ -4,6 +4,8 @@ import {
   CommandInteractionOptionResolver,
 } from 'discord.js'
 
+import wordleManager from '../../games/wordle'
+import getRandomWord from '../../games/wordle/getRandomWord'
 import { Command, CommandExecute } from '../../type'
 
 const data = new SlashCommandBuilder()
@@ -46,8 +48,35 @@ const execute: CommandExecute = async (interaction: CommandInteraction) => {
   }
 }
 
+
+//TODO: Make reply fancier
 const handleStart = async (interaction: CommandInteraction) => {
-  await interaction.reply('start')
+  const word = await getRandomWord('data/wordle_fr.txt')
+
+  if (!word) {
+    await interaction.reply({ content: 'No word found', ephemeral: true })
+    return
+  }
+  if (wordleManager.isThereGame(interaction.user.id)) {
+    await interaction.reply({
+      content: 'You already have a game in progress',
+      ephemeral: true,
+    })
+    return
+  }
+  wordleManager.createGame(interaction.user.id, word)
+
+  let wordle: string = ''
+  wordle += word[0]
+  for (let i = 1; i < word.length; i++) {
+    wordle += ' 🟦'
+  }
+
+  await interaction.reply({
+    content: `Game created
+  ${wordle.toUpperCase()}`,
+    ephemeral: true,
+  })
 }
 
 const handleGuess = async (interaction: CommandInteraction) => {
