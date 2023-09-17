@@ -1,5 +1,6 @@
 import cron from 'node-cron'
 
+import wordleManager from './games/wordle'
 import zenCountSchema from './schemas/zenCountSchema'
 
 async function resetFields(
@@ -15,7 +16,9 @@ async function resetFields(
 
 export default () => {
   // 2am every day
+  cron.schedule('0 2 * * *', () => wordleManager.resetAllGames())
   cron.schedule('0 2 * * *', () => resetFields({ countDay: 0 }))
   // 2am every Monday
   cron.schedule('0 2 * * 1', () => resetFields({ countWeek: 0 }))
+
 }

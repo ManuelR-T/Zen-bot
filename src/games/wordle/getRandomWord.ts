@@ -19,8 +19,7 @@ function getRandomWord(filePath: string): Promise<string | undefined> {
       }
 
       const randomWord = words[Math.floor(Math.random() * words.length)]
-      console.info('Mot aléatoire :', randomWord)
-      resolve(randomWord)
+      resolve(randomWord.slice(0, -1))
     })
   })
 }

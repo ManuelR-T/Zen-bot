@@ -1,11 +1,16 @@
 import isWordValid from './isWordValid'
 
+const MAXGUESSES = 6
+
 class Wordle {
   private targetWord: string
   private guessHistory: string[] = []
   private responseHistory: string[] = []
   private wrongLetterHistory: string[] = []
+  private goodLetterHistory: string[] = []
   private guesses = 0
+  private iswon = false
+
   constructor(targetWord: string) {
     this.targetWord = targetWord
   }
@@ -14,14 +19,31 @@ class Wordle {
     return this.targetWord.length
   }
 
+  getWordleString(): string {
+    let wordle = ''
+    for (let i = 0; i < this.targetWord.length; i++) {
+      if (this.goodLetterHistory.includes(this.targetWord[i])) {
+        wordle += this.targetWord[i].toUpperCase()
+      } else {
+        wordle += '🟦'
+      }
+    }
+    return wordle
+  }
+
   async guess(word: string): Promise<string> {
     word = word.trim().toLowerCase()
-    if (this.guesses >= 5) {
+
+    if (this.iswon) {
+      throw 'You have already won today'
+    }
+
+    if (this.guesses >= MAXGUESSES) {
       throw 'You have reached the maximum number of guesses'
     }
 
     if (word.length !== this.targetWord.length) {
-      throw 'Invalid word length'
+      throw 'Invalid word length, you word must be ' + this.targetWord.length + ' letters long'
     }
 
     if (this.guessHistory.includes(word)) {
@@ -37,17 +59,23 @@ class Wordle {
     let response = ''
     for (let i = 0; i < this.targetWord.length; i++) {
       if (word[i] === this.targetWord[i]) {
-        response += 'G'
+        response += '🟩'
+        if (!this.goodLetterHistory.includes(word[i])) {
+          this.goodLetterHistory.push(word[i])
+        }
       } else if (this.targetWord.includes(word[i])) {
-        response += 'Y'
+        response += '🟨'
       } else {
-        response += 'R'
+        response += '🟥'
         if (!this.wrongLetterHistory.includes(word[i])) {
           this.wrongLetterHistory.push(word[i])
         }
       }
     }
 
+    if (response === '🟩'.repeat(this.targetWord.length)) {
+      this.iswon = true;
+    }
     this.responseHistory.push(response)
     this.guesses++
 
@@ -72,7 +100,6 @@ class WordleManager {
 
   createGame(gameId: string, targetWord: string): string {
     this.games.set(gameId, new Wordle(targetWord))
-    //TODO: Update database timestamp
     return gameId
   }
 

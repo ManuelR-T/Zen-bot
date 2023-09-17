@@ -7,6 +7,7 @@ import {
 import wordleManager from '../../games/wordle'
 import getRandomWord from '../../games/wordle/getRandomWord'
 import { Command, CommandExecute } from '../../type'
+import { stringToEmoji } from '../../utils'
 
 const data = new SlashCommandBuilder()
   .setName('wordle')
@@ -79,7 +80,35 @@ const handleStart = async (interaction: CommandInteraction) => {
 }
 
 const handleGuess = async (interaction: CommandInteraction) => {
-  await interaction.reply('guess')
+  const word = interaction.options.get("word")?.value;
+
+  if (!word || typeof word !== 'string') {
+    await interaction.reply({ content: 'No word found', ephemeral: true })
+    return
+  }
+
+  if (!wordleManager.isThereGame(interaction.user.id)) {
+    await interaction.reply({
+      content: 'You do not have a game in progress',
+      ephemeral: true,
+    })
+    return
+  }
+  try {
+    const wordle = await wordleManager.guess(interaction.user.id, word)
+    //rajouter un espace avant et apres chaque lettre
+    await interaction.reply({
+      content: `${stringToEmoji(word)}\n${wordle}`,
+      ephemeral: true,
+    });
+  } catch (error) {
+    await interaction.reply({
+      content: error,
+      ephemeral: true,
+    })
+    return
+  }
+
 }
 
 export default { data, execute } as Command
