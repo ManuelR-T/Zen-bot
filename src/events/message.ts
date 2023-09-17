@@ -13,13 +13,17 @@ export default {
 }
 
 const handleNezMessage = async (message: Message): Promise<void> => {
-  if (!isMirrorTime()) return
+  const currentDate = new Date();
+  const currentTime = currentDate.getTime()
+  if (!isMirrorTime(currentDate)) return;
+  let emoji = '👃';
+  if (currentDate.getSeconds() === 55)
+    emoji = '😈';
 
   const content = message.content.toLowerCase()
 
   if (!NOSE.some((keyword) => content.includes(keyword))) return
 
-  const currentTime = new Date().getTime()
   try {
     const userDoc = await zenCountSchema
       .findOne({ _id: message.author.id })
@@ -62,5 +66,5 @@ const handleNezMessage = async (message: Message): Promise<void> => {
   } catch (error) {
     console.error('❌ ' + 'Error handling Nez message:', error)
   }
-  message.react('👃')
+  message.react(emoji)
 }
