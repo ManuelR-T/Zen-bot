@@ -12,14 +12,22 @@ export default {
   },
 }
 
+const isFirstNose = async (date: Date): Promise<number> => {
+  const res = await zenCountSchema.findOne({
+    lastMessageTime: { $lte: date.getMilliseconds() - 60 * 1000 },
+  })
+  return res === undefined ? 1 : 0
+}
+
 const handleNezMessage = async (message: Message): Promise<void> => {
+  const currentDate = new Date()
+  const currentTime = currentDate.getTime()
   if (!isMirrorTime()) return
 
   const content = message.content.toLowerCase()
 
   if (!NOSE.some((keyword) => content.includes(keyword))) return
 
-  const currentTime = new Date().getTime()
   try {
     const userDoc = await zenCountSchema
       .findOne({ _id: message.author.id })
@@ -63,5 +71,6 @@ const handleNezMessage = async (message: Message): Promise<void> => {
   } catch (error) {
     console.error('❌ ' + 'Error handling Nez message:', error)
   }
-  message.react('👃')
+  const isDevil = currentDate.getSeconds() >= 55 && isFirstNose(currentDate)
+  message.react(isDevil ? '😈' : '👃')
 }
