@@ -13,12 +13,11 @@ export default {
 }
 
 const handleNezMessage = async (message: Message): Promise<void> => {
-  const currentDate = new Date();
+  const currentDate = new Date()
   const currentTime = currentDate.getTime()
-  if (!isMirrorTime(currentDate)) return;
-  let emoji = '👃';
-  if (currentDate.getSeconds() === 55)
-    emoji = '😈';
+  if (!isMirrorTime(currentDate)) return
+  let emoji = '👃'
+  if (currentDate.getSeconds() === 55) emoji = '😈'
 
   const content = message.content.toLowerCase()
 
