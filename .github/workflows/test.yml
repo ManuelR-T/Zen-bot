@@ -3,7 +3,7 @@ name: Test
 on: [workflow_call]
 jobs:
   test:
-    name: Test
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

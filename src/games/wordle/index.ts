@@ -1,3 +1,5 @@
+import isWordValid from "./isWordValid"
+
 class Wordle {
   private targetWord: string
   private guessHistory: string[] = []
@@ -11,20 +13,23 @@ class Wordle {
     return this.targetWord.length
   }
 
-  guess(word: string): string {
+  async guess(word: string): Promise<string> {
+    word = word.trim().toLowerCase()
     if (this.guesses >= 5) {
-      return 'You have reached the maximum number of guesses'
+      throw 'You have reached the maximum number of guesses'
     }
 
     if (word.length !== this.targetWord.length) {
-      return 'Invalid word length'
+      throw 'Invalid word length'
     }
 
     if (this.guessHistory.includes(word)) {
-      return 'You have already guessed this word'
+      throw 'You have already guessed this word'
     }
 
-    //TODO: check if word is real
+    if (!(await isWordValid("./data/wordle_fr.txt", word))) {
+      throw "Invalid word";
+    }
 
     this.guessHistory.push(word)
 
@@ -72,10 +77,15 @@ export class WordleManager {
     return undefined
   }
 
-  guess(gameId: string, word: string): string | undefined {
+  async guess(gameId: string, word: string): Promise <string | undefined> {
     const game = this.games.get(gameId)
     if (game) {
-      return game.guess(word)
+      try {
+        return await game.guess(word)
+      }
+      catch (error) {
+        throw error
+      }
     }
     return 'Invalid game ID'
   }

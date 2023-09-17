@@ -20,13 +20,22 @@ handleCommands(client)
 handleEvents(client)
 cron()
 
-const manager = new WordleManager()
-manager.createGame('hello', '1')
-console.log(manager.guess('1', 'hella'))
-console.log(manager.guess('1', 'halmo'))
-console.log(manager.guess('1', 'helo'))
-console.log(manager.guess('1', 'hella'))
-console.log(manager.guess('1', 'halmo'))
-console.log(manager.guess('1', 'helo'))
+const manager = new WordleManager();
+manager.createGame("argent", "1");
+
+const asyncc = async (id , word) => {
+  try {
+    console.log(await manager.guess(id, word));
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+asyncc("1", "agents")
+asyncc("1", "argent")
+asyncc("1", "arpent")
+asyncc("1", "argent")
+asyncc("1", "Argent")
 
 client.login(TOKEN)
