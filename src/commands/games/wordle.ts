@@ -48,7 +48,6 @@ const execute: CommandExecute = async (interaction: CommandInteraction) => {
   }
 }
 
-
 //TODO: Make reply fancier
 const handleStart = async (interaction: CommandInteraction) => {
   const word = await getRandomWord('data/wordle_fr.txt')
