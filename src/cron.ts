@@ -20,5 +20,4 @@ export default () => {
   cron.schedule('0 2 * * *', () => resetFields({ countDay: 0 }))
   // 2am every Monday
   cron.schedule('0 2 * * 1', () => resetFields({ countWeek: 0 }))
-
 }

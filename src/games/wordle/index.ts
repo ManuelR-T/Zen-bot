@@ -1,80 +1,54 @@
 import isWordValid from './isWordValid'
 
-const MAXGUESSES = 6
+const MAX_GUESSES = 6
+const GREEN = '🟩'
+const YELLOW = '🟨'
+const RED = '🟥'
+const BLUE = '🟦'
 
 class Wordle {
   private targetWord: string
   private guessHistory: string[] = []
   private responseHistory: string[] = []
   private wrongLetterHistory: string[] = []
-  private goodLetterHistory: string[] = []
+  private wordleStatusDisplay: string[] = []
   private guesses = 0
-  private iswon = false
+  private isWon = false
 
   constructor(targetWord: string) {
     this.targetWord = targetWord
+    this.wordleStatusDisplay.push(targetWord[0])
+    this.wordleStatusDisplay.fill(BLUE, 1, targetWord.length)
   }
 
-  wordlen(): number {
+  get wordLength(): number {
     return this.targetWord.length
-  }
-
-  getWordleString(): string {
-    let wordle = ''
-    for (let i = 0; i < this.targetWord.length; i++) {
-      if (this.goodLetterHistory.includes(this.targetWord[i])) {
-        wordle += this.targetWord[i].toUpperCase()
-      } else {
-        wordle += '🟦'
-      }
-    }
-    return wordle
   }
 
   async guess(word: string): Promise<string> {
     word = word.trim().toLowerCase()
 
-    if (this.iswon) {
-      throw 'You have already won today'
-    }
-
-    if (this.guesses >= MAXGUESSES) {
-      throw 'You have reached the maximum number of guesses'
-    }
-
-    if (word.length !== this.targetWord.length) {
-      throw 'Invalid word length, you word must be ' + this.targetWord.length + ' letters long'
-    }
-
-    if (this.guessHistory.includes(word)) {
-      throw 'You have already guessed this word'
-    }
-
-    if (!(await isWordValid('./data/wordle_fr.txt', word))) {
-      throw 'Invalid word'
-    }
+    await this.validateGuess(word)
 
     this.guessHistory.push(word)
 
     let response = ''
     for (let i = 0; i < this.targetWord.length; i++) {
       if (word[i] === this.targetWord[i]) {
-        response += '🟩'
-        if (!this.goodLetterHistory.includes(word[i])) {
-          this.goodLetterHistory.push(word[i])
-        }
+        response += GREEN
+        this.wordleStatusDisplay[i] = word[i]
       } else if (this.targetWord.includes(word[i])) {
-        response += '🟨'
+        response += YELLOW
       } else {
-        response += '🟥'
+        response += RED
         if (!this.wrongLetterHistory.includes(word[i])) {
           this.wrongLetterHistory.push(word[i])
         }
       }
     }
 
-    if (response === '🟩'.repeat(this.targetWord.length)) {
-      this.iswon = true;
+    if (response === GREEN.repeat(this.targetWord.length)) {
+      this.isWon = true
     }
     this.responseHistory.push(response)
     this.guesses++
@@ -82,7 +56,18 @@ class Wordle {
     return response
   }
 
-  getHistories(): {
+  private async validateGuess(word: string): Promise<void> {
+    if (this.isWon) throw 'You have already won today'
+    if (this.guesses >= MAX_GUESSES)
+      throw 'You have reached the maximum number of guesses'
+    if (word.length !== this.wordLength)
+      throw `Invalid word length, your word must be ${this.wordLength} letters long`
+    if (this.guessHistory.includes(word))
+      throw 'You have already guessed this word'
+    if (!(await isWordValid('./data/wordle_fr.txt', word))) throw 'Invalid word'
+  }
+
+  get histories(): {
     guesses: string[]
     responses: string[]
     wrongLetters: string[]
@@ -92,6 +77,17 @@ class Wordle {
       responses: this.responseHistory,
       wrongLetters: this.wrongLetterHistory,
     }
+  }
+
+  get statusDisplay(): string {
+    //replace ' ' with '🟦'
+    const statusDisplay = this.wordleStatusDisplay.join('')
+    for (let i = 0; i < statusDisplay.length; i++) {
+      if (statusDisplay[i] === ' ') {
+        this.wordleStatusDisplay[i] = BLUE
+      }
+    }
+    return this.wordleStatusDisplay.join('')
   }
 }
 
@@ -103,32 +99,16 @@ class WordleManager {
     return gameId
   }
 
-  isThereGame(gameId: string): boolean {
+  hasGame(gameId: string): boolean {
     return this.games.has(gameId)
   }
 
-  wordlen(gameId: string): number | undefined {
-    const game = this.games.get(gameId)
-    if (game) {
-      return game.wordlen()
-    }
-    return undefined
+  getWordLength(gameId: string): number | undefined {
+    return this.games.get(gameId)?.wordLength
   }
 
   async guess(gameId: string, word: string): Promise<string | undefined> {
-    const game = this.games.get(gameId)
-    if (game) {
-      return await game.guess(word)
-    }
-    return 'Invalid game ID'
-  }
-
-  getGameWordLength(gameId: string): number | undefined {
-    const game = this.games.get(gameId)
-    if (game) {
-      return game.wordlen()
-    }
-    return undefined
+    return this.games.get(gameId)?.guess(word)
   }
 
   getHistories(gameId: string):
@@ -138,12 +118,11 @@ class WordleManager {
         wrongLetters: string[]
       }
     | undefined {
-    const game = this.games.get(gameId)
+    return this.games.get(gameId)?.histories
+  }
 
-    if (game) {
-      return game.getHistories()
-    }
-    return undefined
+  getStatusDisplay(gameId: string): string | undefined {
+    return this.games.get(gameId)?.statusDisplay
   }
 
   resetAllGames(): void {

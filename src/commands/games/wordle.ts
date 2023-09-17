@@ -1,7 +1,7 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import {
   CommandInteraction,
   CommandInteractionOptionResolver,
+  SlashCommandBuilder,
 } from 'discord.js'
 
 import wordleManager from '../../games/wordle'
@@ -53,11 +53,12 @@ const execute: CommandExecute = async (interaction: CommandInteraction) => {
 const handleStart = async (interaction: CommandInteraction) => {
   const word = await getRandomWord('data/wordle_fr.txt')
 
+  console.log(word)
   if (!word) {
     await interaction.reply({ content: 'No word found', ephemeral: true })
     return
   }
-  if (wordleManager.isThereGame(interaction.user.id)) {
+  if (wordleManager.hasGame(interaction.user.id)) {
     await interaction.reply({
       content: 'You already have a game in progress',
       ephemeral: true,
@@ -66,28 +67,28 @@ const handleStart = async (interaction: CommandInteraction) => {
   }
   wordleManager.createGame(interaction.user.id, word)
 
-  let wordle: string = ''
-  wordle += word[0]
+  let response: string = ''
+  response += word[0]
   for (let i = 1; i < word.length; i++) {
-    wordle += ' 🟦'
+    response += ' 🟦'
   }
 
   await interaction.reply({
     content: `Game created
-  ${wordle.toUpperCase()}`,
+  ${response.toUpperCase()}`,
     ephemeral: true,
   })
 }
 
 const handleGuess = async (interaction: CommandInteraction) => {
-  const word = interaction.options.get("word")?.value;
+  const word = interaction.options.get('word')?.value
 
   if (!word || typeof word !== 'string') {
     await interaction.reply({ content: 'No word found', ephemeral: true })
     return
   }
 
-  if (!wordleManager.isThereGame(interaction.user.id)) {
+  if (!wordleManager.hasGame(interaction.user.id)) {
     await interaction.reply({
       content: 'You do not have a game in progress',
       ephemeral: true,
@@ -96,11 +97,18 @@ const handleGuess = async (interaction: CommandInteraction) => {
   }
   try {
     const wordle = await wordleManager.guess(interaction.user.id, word)
-    //rajouter un espace avant et apres chaque lettre
+    const statusDisplay = wordleManager.getStatusDisplay(interaction.user.id)
+    if (!statusDisplay) {
+      await interaction.reply({
+        content: 'No status display found',
+        ephemeral: true,
+      })
+      return
+    }
     await interaction.reply({
-      content: `${stringToEmoji(word)}\n${wordle}`,
+      content: `${stringToEmoji(word)}\n${wordle}\n\n${stringToEmoji(statusDisplay)}`,
       ephemeral: true,
-    });
+    })
   } catch (error) {
     await interaction.reply({
       content: error,
@@ -108,7 +116,6 @@ const handleGuess = async (interaction: CommandInteraction) => {
     })
     return
   }
-
 }
 
 export default { data, execute } as Command

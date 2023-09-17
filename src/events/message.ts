@@ -29,7 +29,7 @@ const handleNezMessage = async (message: Message): Promise<void> => {
     if (currentTime - lastMessageTime.getTime() < 1000 * 60) {
       console.log('actual time: ' + new Date())
       console.log('last message time: ' + lastMessageTime)
-      console.warn('❌ ' + 'Two nose message in less than 60 sec')
+      console.warn('Two nose message in less than 60 sec')
       return
     }
 
@@ -61,7 +61,7 @@ const handleNezMessage = async (message: Message): Promise<void> => {
       { upsert: true, new: true },
     )
   } catch (error) {
-    console.error('❌ ' + 'Error handling Nez message:', error)
+    console.error('Error handling Nez message:', error)
   }
   message.react('👃')
 }
