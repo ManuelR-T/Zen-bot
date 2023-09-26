@@ -1,5 +1,5 @@
 export const stringToEmoji = (str: string): string => {
-  console.log ("-",str,"-")
+  console.log('-', str, '-')
   return str
     .toLowerCase()
     .replace(

@@ -10,22 +10,22 @@ import { Command, CommandExecute } from '../../type'
 import { stringToEmoji } from '../../utils'
 
 const data = new SlashCommandBuilder()
-  .setName("wordle")
-  .setDescription("Play your daily wordle game!")
+  .setName('wordle')
+  .setDescription('Play your daily wordle game!')
   .addSubcommand((subcommand) =>
-    subcommand.setName("start").setDescription("Start a new game (alpha)")
+    subcommand.setName('start').setDescription('Start a new game (alpha)'),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("guess")
-      .setDescription("Guess a word (alpha)")
+      .setName('guess')
+      .setDescription('Guess a word (alpha)')
       .addStringOption((option) =>
         option
-          .setName("word")
-          .setDescription("The word to guess (alpha)")
-          .setRequired(true)
-      )
-  );
+          .setName('word')
+          .setDescription('The word to guess (alpha)')
+          .setRequired(true),
+      ),
+  )
 
 const execute: CommandExecute = async (interaction: CommandInteraction) => {
   if (!interaction.isCommand()) return
@@ -106,12 +106,14 @@ const handleGuess = async (interaction: CommandInteraction) => {
       return
     }
     await interaction.reply({
-      content: `${stringToEmoji(word)}\n${wordle}\n\n${stringToEmoji(statusDisplay)}`,
+      content: `${stringToEmoji(word)}\n${wordle}\n\n${stringToEmoji(
+        statusDisplay,
+      )}`,
       ephemeral: true,
     })
   } catch (error) {
     await interaction.reply({
-      content: "Error",
+      content: 'Error',
       ephemeral: true,
     })
     return
