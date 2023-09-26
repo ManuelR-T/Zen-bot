@@ -111,7 +111,7 @@ const handleGuess = async (interaction: CommandInteraction) => {
     })
   } catch (error) {
     await interaction.reply({
-      content: error,
+      content: "Error",
       ephemeral: true,
     })
     return
