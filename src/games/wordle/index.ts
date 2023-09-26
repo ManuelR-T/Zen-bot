@@ -80,7 +80,6 @@ class Wordle {
   }
 
   get statusDisplay(): string {
-    //replace ' ' with '🟦'
     const statusDisplay = this.wordleStatusDisplay.join('')
     for (let i = 0; i < statusDisplay.length; i++) {
       if (statusDisplay[i] === ' ') {

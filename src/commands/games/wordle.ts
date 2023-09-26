@@ -10,22 +10,22 @@ import { Command, CommandExecute } from '../../type'
 import { stringToEmoji } from '../../utils'
 
 const data = new SlashCommandBuilder()
-  .setName('wordle')
-  .setDescription('Play your daily wordle game!')
+  .setName("wordle")
+  .setDescription("Play your daily wordle game!")
   .addSubcommand((subcommand) =>
-    subcommand.setName('start').setDescription('Start a new game'),
+    subcommand.setName("start").setDescription("Start a new game (alpha)")
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName('guess')
-      .setDescription('Guess a word')
+      .setName("guess")
+      .setDescription("Guess a word (alpha)")
       .addStringOption((option) =>
         option
-          .setName('word')
-          .setDescription('The word to guess')
-          .setRequired(true),
-      ),
-  )
+          .setName("word")
+          .setDescription("The word to guess (alpha)")
+          .setRequired(true)
+      )
+  );
 
 const execute: CommandExecute = async (interaction: CommandInteraction) => {
   if (!interaction.isCommand()) return
