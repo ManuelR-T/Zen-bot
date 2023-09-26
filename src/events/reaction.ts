@@ -1,5 +1,5 @@
-import { Events } from 'discord.js'
 import {
+  Events,
   MessageReaction,
   User,
   PartialMessageReaction,
@@ -42,7 +42,7 @@ const handleNezReaction = async (
     if (new Date().getTime() - lastMessageTime.getTime() < 1000 * 60) {
       console.log('actual time: ' + new Date())
       console.log('last message time: ' + lastMessageTime)
-      console.warn('❌ ' + 'Two nose message in less than 60 sec')
+      console.warn('Two nose message in less than 60 sec')
       return
     }
 
@@ -55,6 +55,6 @@ const handleNezReaction = async (
       { upsert: true, new: true },
     )
   } catch (error) {
-    console.error('❌ ' + 'Error handling Nez message:', error)
+    console.error('Error handling Nez message:', error)
   }
 }

@@ -1,5 +1,4 @@
-import { Events } from 'discord.js'
-import { Interaction } from 'discord.js'
+import { Events, Interaction } from 'discord.js'
 
 import { MyClient } from '../type'
 

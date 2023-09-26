@@ -1,8 +1,51 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 
 import zenCountSchema from '../../schemas/zenCountSchema'
-import { Command } from '../../type'
+import { Command, CommandExecute } from '../../type'
 import { newEmbedLeaderboard } from '../../utils'
+
+const data = new SlashCommandBuilder()
+  .setName('streak')
+  .setDescription('Show the Streak Leaderboard.')
+  .addNumberOption((option) =>
+    option
+      .setName('user_nb')
+      .setDescription(
+        'The number of users to show in the leaderboard. Min 1, max 20.',
+      )
+      .setRequired(false)
+      .setMaxValue(20)
+      .setMinValue(1),
+  )
+  .addBooleanOption((option) =>
+    option
+      .setName('hidden')
+      .setDescription('Hide the command from other users.')
+      .setRequired(false),
+  )
+
+const execute: CommandExecute = async (interaction) => {
+  try {
+    const hidden = interaction.options.get('hidden')?.value as boolean
+    const userNb = interaction.options.get('user_nb')?.value as number | 10
+    const leaderboardEntries = await getStreakLeaderboard(userNb)
+    if (leaderboardEntries.length === 0) {
+      interaction.reply('No one has any streaks yet!')
+      return
+    }
+
+    const embed = newEmbedLeaderboard({
+      title: '🔥 Streak Leaderboard 🔥',
+      leaderboardEntries,
+      userNb,
+      defaultUserNb: 10,
+    })
+
+    await interaction.reply({ embeds: [embed], ephemeral: hidden })
+  } catch (error) {
+    console.error('Error getting streak leaderboard:', error)
+  }
+}
 
 const getStreakLeaderboard = async (
   userNb: number,
@@ -51,46 +94,4 @@ const getStreakLeaderboard = async (
   })
 }
 
-export default {
-  data: new SlashCommandBuilder()
-    .setName('streak')
-    .setDescription('Show the Streak Leaderboard.')
-    .addNumberOption((option) =>
-      option
-        .setName('user_nb')
-        .setDescription(
-          'The number of users to show in the leaderboard. Min 1, max 20.',
-        )
-        .setRequired(false)
-        .setMaxValue(20)
-        .setMinValue(1),
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName('hidden')
-        .setDescription('Hide the command from other users.')
-        .setRequired(false),
-    ),
-  async execute(interaction) {
-    try {
-      const hidden = interaction.options.get('hidden')?.value as boolean
-      const userNb = interaction.options.get('user_nb')?.value as number | 10
-      const leaderboardEntries = await getStreakLeaderboard(userNb)
-      if (leaderboardEntries.length === 0) {
-        interaction.reply('No one has any streaks yet!')
-        return
-      }
-
-      const embed = newEmbedLeaderboard({
-        title: '🔥 Streak Leaderboard 🔥',
-        leaderboardEntries,
-        userNb,
-        defaultUserNb: 10,
-      })
-
-      await interaction.reply({ embeds: [embed], ephemeral: hidden })
-    } catch (error) {
-      console.error('Error getting streak leaderboard:', error)
-    }
-  },
-} as Command
+export default { data, execute } as Command
