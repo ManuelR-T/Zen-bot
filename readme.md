@@ -1,78 +1,101 @@
-# Discord Bot Project
+# 🤖 Discord Nose Bot
 
-This project provides the structure for a Discord bot using the discord.js library, alongside MongoDB for database operations.
+## Table of Contents
+1. [Overview](#-overview)
+2. [Features](#-features)
+3. [Getting Started](#-getting-started)
+   - [Prerequisites](#prerequisites)
+   - [Setup and Installation](#setup-and-installation)
+4. [Available Scripts](#-available-scripts)
+5. [Libraries and Dependencies](#-libraries-and-dependencies)
+6. [Contributing](#-contributing)
+## 🌐 Overview
 
-## Prerequisites
+Welcome to the **Discord Nose Bot Project**! This project offers a Discord bot using `discord.js` and `MongoDB` for database operations.
 
-1. Ensure you have [Node.js](https://nodejs.org/) & [Bun](https://bun.sh/) installed on your machine.
-2. You should have a [MongoDB](https://www.mongodb.com/) server running to handle database operations.
-3. Create a [Discord application](https://discord.com/developers/applications) and add a bot to it. You can follow [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more information.
+## 🌟 Features
 
-## Setup
+- Easy setup and installation
+- Utilizes `discord.js` and `MongoDB`
+- Provides various scripts for development, testing, and deployment
 
-1. Clone the repository:
+## 🚀 Getting Started
 
-   ```bash
-   git clone git@github.com:ManuelR-T/Discord-nose-bot.git discord-nose-bot
-   cd discord-nose-bot
-   ```
+### Prerequisites
 
-2. Install the required dependencies:
+Before starting, ensure your machine has:
 
-   ```bash
-   bun install
-   ```
+1. [Node.js](https://nodejs.org/)
+2. [Bun](https://bun.sh/)
+3. [MongoDB](https://www.mongodb.com/)
+4. A [Discord application](https://discord.com/developers/applications) and bot setup. Refer to [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
 
-3. Create a `.env` by copying the `.env.example` file:
+## 🚀 Setup and Installation
 
-   ```bash
-    cp .env.example .env
-   ```
-
-4. Fill in the required environment variables in the `.env` file.
-
-## Available Scripts
-
-- **Dev**: Starts the bot in development mode using nodemon and ts-node.
-
+1. **Clone the Repository:**
   ```bash
-  bun run dev
-  ```
-- **Commands**: Updates the commands of the Discord bot. (This can take up to an hour to take effect.)
-
-  ```bash
-  bun run commands:update
-  ```
-- **Test**: Runs the tests.
-
-  ```bash
-  bun test
+    git clone git@github.com:ManuelR-T/Discord-nose-bot.git discord-nose-bot
+    cd discord-nose-bot
   ```
 
-- **Lint**: Lints the codebase using ESLint with Prettier plugin.
-
+2. **Install Dependencies:**
   ```bash
-  bun run lint:fix
+    bun install
   ```
 
-## Libraries and Dependencies
+3. **Environment Configuration:**
+   - Create a `.env` file by copying the example file:
+    ```bash
+      cp .env.example .env
+    ```
+   - Populate the `.env` file with the required environment variables.
 
-- **Core**:
+## 📜 Available Scripts
 
-  - [discord.js](https://discord.js.org/): For interacting with the Discord API.
-  - [dotenv](https://www.npmjs.com/package/dotenv): To load environment variables from a `.env` file.
-  - [mongodb](https://www.npmjs.com/package/mongodb): MongoDB driver for Node.js.
-  - [mongoose](https://mongoosejs.com/): Elegant MongoDB object modeling for Node.js.
+- **Dev**: Begin the bot in development mode using nodemon and ts-node.
+  ```bash
+    bun run dev
+  ```
 
-- **Development**:
-  - TypeScript, ESLint, Prettier: For type safety, linting, and code formatting respectively.
+- **Commands**: Update the Discord bot's commands. (Note: This might take up to an hour to reflect changes)
+  ```bash
+    bun run commands:update
+  ```
 
-## Contributing
+- **Test**: Execute the tests.
+  - **Test**: Execute the tests one time.
+  ```bash
+    bun test
+  ```
+  - **Watch**: Execute the tests in watch mode.
+    ```bash
+      bun test --watch
+    ```
 
-If you wish to contribute to the project, please follow the standard GitHub pull request process:
+- **Lint**: Perform linting on the codebase using ESLint with the Prettier plugin.
+  ```bash
+    bun run lint:fix
+  ```
+
+## 📚 Libraries and Dependencies
+
+- **Core Libraries:**
+  - `discord.js`: Interact with the Discord API.
+  - `dotenv`: Load environment variables from `.env` files.
+  - `mongodb & mongoose`: Handle MongoDB operations effectively.
+
+- **Development Tools:**
+  - Utilizes TypeScript, ESLint, and Prettier for development excellence.
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow the below steps:
 
 1. Fork the repository.
-2. Create a new branch for your features or fixes.
-3. Make your changes.
-4. Push your changes to your fork.
-5. Submit a pull request.
+2. Create a New Branch for your features or fixes.
+3. Commit Changes to your branch.
+4. Push Changes to your fork.
+5. Submit a Pull Request for review.
+
+Your contributions will undergo a review before merging. Let's collaborate to enhance this project further!
+

@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p config",
-    "start": "node dist/index.js",
-    "fast": "rm -fR ./dist; tsc -p config && node dist/index.js",
+    "start": "bun dist/index.js",
+    "fast": "rm -fR ./dist; tsc -p config && bun dist/index.js",
     "dev": "bun --watch src/index.ts",
     "commands:update": "bun ./src/deploy-commands.ts",
     "lint": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts .",
