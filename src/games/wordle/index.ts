@@ -1,4 +1,4 @@
-import isWordValid from './isWordValid'
+import { isWordValid } from './words'
 
 const MAX_GUESSES = 6
 const GREEN = '🟩'
@@ -6,11 +6,29 @@ const YELLOW = '🟨'
 const RED = '🟥'
 const BLUE = '🟦'
 
+const ERR_ALREADY_WON = 'You have already won today'
+const ERR_WORD_LENGTH = (length: number) =>
+  `Invalid word length, your word must be ${length} letters long`
+const ERR_WORD_GUESSED = 'You have already guessed this word'
+const ERR_INVALID_WORD = 'Invalid word'
+
+class AlreadyWonError extends Error {
+  constructor() {
+    super(ERR_ALREADY_WON)
+  }
+}
+
+class MaxGuessesError extends Error {
+  constructor(maxGuesses: number) {
+    super(`You have reached the maximum number of guesses: ${maxGuesses}.`)
+  }
+}
+
 class Wordle {
   private targetWord: string
   private guessHistory: string[] = []
   private responseHistory: string[] = []
-  private wrongLetterHistory: string[] = []
+  private wrongLetterHistory: Set<string> = new Set()
   private wordleStatusDisplay: string[] = []
   private guesses = 0
   private isWon = false
@@ -23,6 +41,10 @@ class Wordle {
 
   get wordLength(): number {
     return this.targetWord.length
+  }
+
+  get remainingGuesses(): number {
+    return MAX_GUESSES - this.guesses
   }
 
   async guess(word: string): Promise<string> {
@@ -41,9 +63,7 @@ class Wordle {
         response += YELLOW
       } else {
         response += RED
-        if (!this.wrongLetterHistory.includes(word[i])) {
-          this.wrongLetterHistory.push(word[i])
-        }
+        this.wrongLetterHistory.add(word[i])
       }
     }
 
@@ -57,20 +77,18 @@ class Wordle {
   }
 
   private async validateGuess(word: string): Promise<void> {
-    if (this.isWon) throw 'You have already won today'
-    if (this.guesses >= MAX_GUESSES)
-      throw 'You have reached the maximum number of guesses'
+    if (this.isWon) throw new AlreadyWonError()
+    if (this.guesses >= MAX_GUESSES) throw new MaxGuessesError(MAX_GUESSES)
     if (word.length !== this.wordLength)
-      throw `Invalid word length, your word must be ${this.wordLength} letters long`
-    if (this.guessHistory.includes(word))
-      throw 'You have already guessed this word'
-    if (!(await isWordValid('./data/wordle_fr.txt', word))) throw 'Invalid word'
+      throw new Error(ERR_WORD_LENGTH(this.wordLength))
+    if (this.guessHistory.includes(word)) throw new Error(ERR_WORD_GUESSED)
+    if (!isWordValid(word)) throw new Error(ERR_INVALID_WORD)
   }
 
   get histories(): {
     guesses: string[]
     responses: string[]
-    wrongLetters: string[]
+    wrongLetters: Set<string>
   } {
     return {
       guesses: this.guessHistory,
@@ -106,6 +124,10 @@ class WordleManager {
     return this.games.get(gameId)?.wordLength
   }
 
+  getRemainingGuesses(gameId: string): number | undefined {
+    return this.games.get(gameId)?.remainingGuesses
+  }
+
   async guess(gameId: string, word: string): Promise<string | undefined> {
     return this.games.get(gameId)?.guess(word)
   }
@@ -114,7 +136,7 @@ class WordleManager {
     | {
         guesses: string[]
         responses: string[]
-        wrongLetters: string[]
+        wrongLetters: Set<string>
       }
     | undefined {
     return this.games.get(gameId)?.histories

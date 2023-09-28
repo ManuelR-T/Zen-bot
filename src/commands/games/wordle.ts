@@ -5,7 +5,7 @@ import {
 } from 'discord.js'
 
 import wordleManager from '../../games/wordle'
-import getRandomWord from '../../games/wordle/getRandomWord'
+import { getRandomWord } from '../../games/wordle/words'
 import { Command, CommandExecute } from '../../type'
 import { stringToEmoji } from '../../utils'
 
@@ -51,7 +51,7 @@ const execute: CommandExecute = async (interaction: CommandInteraction) => {
 
 //TODO: Make reply fancier
 const handleStart = async (interaction: CommandInteraction) => {
-  const word = await getRandomWord('data/wordle_fr.txt')
+  const word = getRandomWord()
 
   console.log(word)
   if (!word) {
@@ -82,13 +82,14 @@ const handleStart = async (interaction: CommandInteraction) => {
 
 const handleGuess = async (interaction: CommandInteraction) => {
   const word = interaction.options.get('word')?.value
+  const player = interaction.user.id
 
   if (!word || typeof word !== 'string') {
     await interaction.reply({ content: 'No word found', ephemeral: true })
     return
   }
 
-  if (!wordleManager.hasGame(interaction.user.id)) {
+  if (!wordleManager.hasGame(player)) {
     await interaction.reply({
       content: 'You do not have a game in progress',
       ephemeral: true,
@@ -96,8 +97,8 @@ const handleGuess = async (interaction: CommandInteraction) => {
     return
   }
   try {
-    const wordle = await wordleManager.guess(interaction.user.id, word)
-    const statusDisplay = wordleManager.getStatusDisplay(interaction.user.id)
+    const wordle = await wordleManager.guess(player, word)
+    const statusDisplay = wordleManager.getStatusDisplay(player)
     if (!statusDisplay) {
       await interaction.reply({
         content: 'No status display found',
@@ -105,15 +106,20 @@ const handleGuess = async (interaction: CommandInteraction) => {
       })
       return
     }
+
+    const remainingGuesses = wordleManager.getRemainingGuesses(player)
+
     await interaction.reply({
-      content: `${stringToEmoji(word)}\n${wordle}\n\n${stringToEmoji(
+      content: `Guess: ${stringToEmoji(
+        word,
+      )}\nFeedback: ${wordle}\n\nCurrent Status: ${stringToEmoji(
         statusDisplay,
-      )}`,
+      )}\nGuesses remaining: ${remainingGuesses}`,
       ephemeral: true,
     })
   } catch (error) {
     await interaction.reply({
-      content: 'Error',
+      content: `Error: ${error.message}`,
       ephemeral: true,
     })
     return
