@@ -1,5 +1,5 @@
 {
-  "name": "discord",
+  "name": "zen_bot",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
@@ -26,7 +26,6 @@
     "zlib-sync": "^0.1.8"
   },
   "devDependencies": {
-    "@flydotio/dockerfile": "^0.4.8",
     "@types/node-cron": "^3.0.8",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
