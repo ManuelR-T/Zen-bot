@@ -119,7 +119,7 @@ const handleGuess = async (interaction: CommandInteraction) => {
     })
   } catch (error) {
     await interaction.reply({
-      content: `Error: ${error.message}`,
+      content: `An unexpected error occurred.`,
       ephemeral: true,
     })
     return
