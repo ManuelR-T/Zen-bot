@@ -47,41 +47,55 @@ const execute: CommandExecute = async (interaction) => {
   }
 }
 
+const getLastMirrorTime = () => {
+  const date = new Date();
+  const hour = date.getHours(); 
+  const minute = date.getMinutes();
+
+  if (minute >= hour) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, hour);
+  } else {
+    if (hour === 0) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1, 23, 23);
+    }
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour - 1, hour - 1);
+  }
+}
+
+
 const getStreakLeaderboard = async (
   userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
-  const currentTime = new Date().getTime()
-  const usersToMark = await zenCountSchema.find({
-    lastMessageTime: { $lt: currentTime - 61 * 1000 },
-    streak: { $gt: 0 },
-  })
+  const lastMirrorTime = getLastMirrorTime();
 
-  setTimeout(async () => {
-    for (const user of usersToMark) {
-      const lastMessageTime = user.lastMessageTime.getTime()
-      if (lastMessageTime < currentTime - 61 * 1000) {
-        user.streak = 0
-        await user.save()
-      }
-    }
-  }, 60 * 1000)
+  const usersToMark = await zenCountSchema.find({
+    lastMessageTime: { $ne: lastMirrorTime },
+    streak: { $gt: 0 },
+  });
+
+  for (const user of usersToMark) {
+    user.streak = 0;
+    await user.save();
+  }
 
   const results = await zenCountSchema
     .find({ streak: { $gt: 0 } })
     .sort({ streak: -1 })
     .limit(userNb)
-    .exec()
+    .exec();
 
   return results.map((result) => {
-    const streak = result.streak
-    let emoji = ''
+    const streak = result.streak;
+    let emoji = '';
 
-    if (streak >= 6) {
-      emoji = '🔥'
+    if (streak >= 24 ) {
+      emoji = '😴';
+    } else if (streak > 6) {
+      emoji = '🔥';
     } else if (streak >= 3) {
-      emoji = '👨‍🚒'
+      emoji = '👨‍🚒';
     } else {
-      emoji = '👃'
+      emoji = '👃';
     }
 
     return {
@@ -90,8 +104,8 @@ const getStreakLeaderboard = async (
       } (best : ${result.bestStreak})`,
       value: `<@${result._id}> `,
       inline: true,
-    }
-  })
-}
+    };
+  });
+};
 
 export default { data, execute } as Command
