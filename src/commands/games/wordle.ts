@@ -121,7 +121,7 @@ const handleGuess = async (interaction: CommandInteraction) => {
     await interaction.reply({
       content: `An unexpected error occurred.`,
       ephemeral: true,
-    });
+    })
     return
   }
 }
