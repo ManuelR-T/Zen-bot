@@ -7,7 +7,7 @@ const RED = '🟥'
 const BLUE = '🟦'
 
 const ERR_ALREADY_WON = 'You have already won today'
-const ERR_WORD_LENGTH = (length: number) =>
+const ERR_WORD_LENGTH = (length: number): string =>
   `Invalid word length, your word must be ${length} letters long`
 const ERR_WORD_GUESSED = 'You have already guessed this word'
 const ERR_INVALID_WORD = 'Invalid word'
@@ -26,9 +26,9 @@ class MaxGuessesError extends Error {
 
 class Wordle {
   private targetWord: string
-  private guessHistory: string[] = []
-  private responseHistory: string[] = []
+  private guessHistory: Set<string> = new Set()
   private wrongLetterHistory: Set<string> = new Set()
+  private responseHistory: string[] = []
   private wordleStatusDisplay: string[] = []
   private guesses = 0
   private isWon = false
@@ -52,7 +52,7 @@ class Wordle {
 
     await this.validateGuess(word)
 
-    this.guessHistory.push(word)
+    this.guessHistory.add(word)
 
     let response = ''
     for (let i = 0; i < this.targetWord.length; i++) {
@@ -81,12 +81,12 @@ class Wordle {
     if (this.guesses >= MAX_GUESSES) throw new MaxGuessesError(MAX_GUESSES)
     if (word.length !== this.wordLength)
       throw new Error(ERR_WORD_LENGTH(this.wordLength))
-    if (this.guessHistory.includes(word)) throw new Error(ERR_WORD_GUESSED)
+    if (this.guessHistory.has(word)) throw new Error(ERR_WORD_GUESSED)
     if (!isWordValid(word)) throw new Error(ERR_INVALID_WORD)
   }
 
   get histories(): {
-    guesses: string[]
+    guesses: Set<string>
     responses: string[]
     wrongLetters: Set<string>
   } {
@@ -134,7 +134,7 @@ class WordleManager {
 
   getHistories(gameId: string):
     | {
-        guesses: string[]
+        guesses: Set<string>
         responses: string[]
         wrongLetters: Set<string>
       }

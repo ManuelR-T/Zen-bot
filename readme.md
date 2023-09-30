@@ -1,4 +1,4 @@
-# 🤖 Discord Nose Bot
+# 🤖 Zen Bot
 
 ## Table of Contents
 1. [Overview](#-overview)
@@ -11,7 +11,7 @@
 6. [Contributing](#-contributing)
 ## 🌐 Overview
 
-Welcome to the **Discord Nose Bot Project**! This project offers a Discord bot using `discord.js` and `MongoDB` for database operations.
+Welcome to the **Zen Bot Project**! This project offers a Discord bot using `discord.js` and `MongoDB` for database operations.
 
 ## 🌟 Features
 
@@ -34,8 +34,8 @@ Before starting, ensure your machine has:
 
 1. **Clone the Repository:**
   ```bash
-    git clone git@github.com:ManuelR-T/Discord-nose-bot.git discord-nose-bot
-    cd discord-nose-bot
+    git clone git@github.com:ManuelR-T/Zen-bot.git
+    cd Zen-bot
   ```
 
 2. **Install Dependencies:**

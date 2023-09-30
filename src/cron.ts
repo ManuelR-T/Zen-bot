@@ -5,7 +5,7 @@ import zenCountSchema from './schemas/zenCountSchema'
 
 async function resetFields(
   fieldsToUpdate: Record<string, string | number | Date>,
-) {
+): Promise<void> {
   try {
     await zenCountSchema.updateMany({}, { $set: fieldsToUpdate })
     console.log('Fields have been reset')
@@ -14,10 +14,10 @@ async function resetFields(
   }
 }
 
-export default () => {
+export default (): void => {
   // 2am every day
   cron.schedule('0 2 * * *', () => wordleManager.resetAllGames())
-  cron.schedule('0 2 * * *', () => resetFields({ countDay: 0 }))
+  cron.schedule('0 2 * * *', async () => resetFields({ countDay: 0 }))
   // 2am every Monday
-  cron.schedule('0 2 * * 1', () => resetFields({ countWeek: 0 }))
+  cron.schedule('0 2 * * 1', async () => resetFields({ countWeek: 0 }))
 }

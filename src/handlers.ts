@@ -3,7 +3,7 @@ import path from 'path'
 
 import { MyClient } from './type'
 
-export const handleEvents = async (client: MyClient) => {
+export const handleEvents = async (client: MyClient): Promise<void> => {
   const eventsPath = path.join(__dirname, 'events')
   const eventFiles = fs
     .readdirSync(eventsPath)
@@ -21,7 +21,7 @@ export const handleEvents = async (client: MyClient) => {
   }
 }
 
-export const handleCommands = async (client: MyClient) => {
+export const handleCommands = async (client: MyClient): Promise<void> => {
   const commandFolders = fs.readdirSync(path.join(__dirname, 'commands'))
   const foldersPath = path.join(__dirname, 'commands')
   for (const folder of commandFolders) {

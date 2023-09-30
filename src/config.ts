@@ -1,10 +1,19 @@
-import { config } from 'dotenv'
+function getEnvVar(
+  variable: string,
+  name: string,
+  defaultValue: string = '',
+): string {
+  const value = process.env[variable] || defaultValue
+  if (!value) {
+    console.error(`Environment variable ${name} (${variable}) is not defined.`)
+  }
+  return value
+}
 
-config()
+export const TOKEN = getEnvVar('TOKEN', 'Token')
+export const MONGO_URI = getEnvVar('MONGO_URI', 'Mongo URI')
+export const CLIENT_ID = getEnvVar('CLIENT_ID', 'Client ID')
 
-export const TOKEN = process.env.TOKEN || ''
-export const MONGO_URI = process.env.MONGO_URI || ''
-export const CLIENT_ID = process.env.CLIENT_ID || ''
 export const NOSE = [
   'nez',
   'zen',

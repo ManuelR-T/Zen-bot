@@ -11,7 +11,7 @@ const commands: Command[] = []
 const foldersPath = join(__dirname, 'commands')
 const commandFolders = readdirSync(foldersPath)
 
-async function loadCommands() {
+async function loadCommands(): Promise<void> {
   for (const folder of commandFolders) {
     const commandsPath = join(foldersPath, folder)
     const commandFiles = readdirSync(commandsPath).filter((file) =>
@@ -27,8 +27,8 @@ async function loadCommands() {
         if ('data' in command && 'execute' in command) {
           commands.push(command.data.toJSON())
         } else {
-          console.log(
-            `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
+          console.warn(
+            `The command at ${filePath} is missing a required "data" or "execute" property.`,
           )
         }
       } catch (error) {

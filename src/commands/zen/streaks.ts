@@ -47,7 +47,7 @@ const execute: CommandExecute = async (interaction) => {
   }
 }
 
-const getLastMirrorTime = () => {
+const getLastMirrorTime = (): Date => {
   const date = new Date()
   const hour = date.getHours()
   const minute = date.getMinutes()

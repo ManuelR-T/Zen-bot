@@ -11,7 +11,9 @@ type embedLeaderboardProps = {
   url?: string
 }
 
-export const newEmbedLeaderboard = (props: embedLeaderboardProps) => {
+export const newEmbedLeaderboard = (
+  props: embedLeaderboardProps,
+): EmbedBuilder => {
   return new EmbedBuilder()
     .setColor(props.color || 0x0099ff)
     .setURL(props.url || null)

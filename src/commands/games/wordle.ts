@@ -50,7 +50,7 @@ const execute: CommandExecute = async (interaction: CommandInteraction) => {
 }
 
 //TODO: Make reply fancier
-const handleStart = async (interaction: CommandInteraction) => {
+const handleStart = async (interaction: CommandInteraction): Promise<void> => {
   const word = getRandomWord()
 
   console.log(word)
@@ -80,7 +80,7 @@ const handleStart = async (interaction: CommandInteraction) => {
   })
 }
 
-const handleGuess = async (interaction: CommandInteraction) => {
+const handleGuess = async (interaction: CommandInteraction): Promise<void> => {
   const word = interaction.options.get('word')?.value
   const player = interaction.user.id
 

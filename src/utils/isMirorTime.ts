@@ -1,20 +1,11 @@
-const isDSTinParis = (date: Date) => {
-  // Daylight Saving Time starts on the last Sunday of March
-  const dstStart = new Date(date.getFullYear(), 2, 31, 2 - 1)
-  dstStart.setDate(31 - dstStart.getDay())
+import { getHours, getMinutes } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 
-  // Daylight Saving Time ends on the last Sunday of October
-  const dstEnd = new Date(date.getFullYear(), 9, 31, 3 - 1)
-  dstEnd.setDate(31 - dstEnd.getDay())
+export const isMirrorTime = (
+  now = new Date(),
+  tz = 'Europe/Paris',
+): boolean => {
+  const parisTime = utcToZonedTime(now, tz)
 
-  return date >= dstStart && date < dstEnd
-}
-
-export const isMirrorTime = (now = new Date()): boolean => {
-  const gmt = now.getTimezoneOffset() / 60
-  const offset = isDSTinParis(now) ? 2 : 1
-
-  now = new Date(now.getTime() + (offset + gmt) * 3600000)
-
-  return now.getHours() === now.getMinutes()
+  return getHours(parisTime) === getMinutes(parisTime)
 }

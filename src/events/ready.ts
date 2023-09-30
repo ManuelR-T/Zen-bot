@@ -3,7 +3,6 @@ import mongoose from 'mongoose'
 
 import { client } from '..'
 import { MONGO_URI } from '../config'
-import betterConsole from '../misc/betterConsole'
 import { MyClient } from '../type'
 
 const connectToMongoDB = (): void => {
@@ -14,7 +13,7 @@ const connectToMongoDB = (): void => {
     console.error('Failed to connect to MongoDB.')
     process.exit(1)
   }
-  console.success('Connected to the Database')
+  console.log('Connected to the Database')
 }
 
 const setUserActivity = (): void => {
@@ -29,7 +28,6 @@ export default {
   name: Events.ClientReady,
   once: true,
   execute(client: MyClient) {
-    betterConsole()
     if (!client) {
       console.error('Failed to create client.')
       process.exit(1)
@@ -41,8 +39,7 @@ export default {
     console.info('Tune the discord bot')
 
     setUserActivity()
-    setInterval(setUserActivity, 10000)
-    console.success('Bot is ready! (' + client?.user?.tag + ')')
+    console.log('Bot is ready! (' + client?.user?.tag + ')')
     connectToMongoDB()
     console.timeEnd('Startup time')
   },

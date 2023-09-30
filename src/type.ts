@@ -1,5 +1,9 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { CommandInteraction, Client, Collection } from 'discord.js'
+import {
+  CommandInteraction,
+  Client,
+  Collection,
+  SlashCommandBuilder,
+} from 'discord.js'
 
 export type CommandExecute = (interaction: CommandInteraction) => Promise<void>
 
