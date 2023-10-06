@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p config",
+    "build": "bunx tsc -p config",
     "start": "bun dist/index.js",
     "clean": "rm -fR ./dist",
     "rebuild": "rm -fR ./dist; tsc -p config && bun dist/index.js",
