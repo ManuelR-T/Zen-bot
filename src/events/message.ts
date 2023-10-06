@@ -14,11 +14,14 @@ export default {
 }
 
 const isFirstNose = async (date: Date): Promise<boolean> => {
-  const oneMinuteAgo = new Date(date.getTime() - 60 * 1000)
+  const oneMinuteAgo = new Date(date.valueOf() - 60 * 1000)
+  console.log('date', date)
+  console.log('oneMinuteAgo', oneMinuteAgo)
   const res = await zenCountSchema.findOne({
-    lastMessageTime: { $lte: oneMinuteAgo },
+    lastMessageTime: { $gte: oneMinuteAgo },
   })
-  return res === undefined ? false : res
+  console.log('isFirstNose', res)
+  return res === null
 }
 
 const updateZenCount = async (
@@ -43,8 +46,10 @@ const IsZenMessage = (message: Message): boolean => {
 const handleNezMessage = async (message: Message): Promise<void> => {
   if (!IsZenMessage(message)) return
 
-  const currentDate = new Date()
+  const currentDate = new Date(message.createdTimestamp)
   const currentTime = currentDate.getTime()
+  const isDevil =
+    currentDate.getSeconds() >= 55 && (await isFirstNose(currentDate))
 
   try {
     const userDoc = await zenCountSchema
@@ -58,22 +63,23 @@ const handleNezMessage = async (message: Message): Promise<void> => {
       return
     }
 
-    const isWithinOneHour = timeSinceLastMessage < 60 * 60 * 1000
-    const streakUpdate = isWithinOneHour
-      ? { $inc: { streak: 1 }, $max: { bestStreak: userDoc.streak + 1 } }
-      : { $set: { streak: 1 } }
+    const isWithinOneHour = timeSinceLastMessage < 60 * (60 + 1) * 1000
+    const queryUpdate = isWithinOneHour
+      ? {
+          $inc: { streak: 1, count: 1, countWeek: 1, countDay: 1 },
+          $max: { bestStreak: userDoc.streak + 1 },
+          lastMessageTime: new Date(),
+        }
+      : {
+          $set: { streak: 1 },
+          $inc: { count: 1, countWeek: 1, countDay: 1 },
+          lastMessageTime: new Date(),
+        }
 
-    await updateZenCount(message.author.id, streakUpdate)
-
-    await updateZenCount(message.author.id, {
-      $inc: { count: 1, countWeek: 1, countDay: 1 },
-      lastMessageTime: new Date(),
-    })
+    await updateZenCount(message.author.id, queryUpdate)
   } catch (error) {
     console.error('Error handling Nez message:', error)
   }
 
-  const isDevil =
-    currentDate.getSeconds() >= 55 && (await isFirstNose(currentDate))
   message.react(isDevil ? '😈' : '👃')
 }
