@@ -7,17 +7,14 @@ const wordleSchema = new Schema({
   },
   count: {
     type: Number,
-    required: true,
     default: 0,
   },
   lastTime: {
     type: Date,
-    required: true,
     default: new Date(0),
   },
   streak: {
     type: Number,
-    required: true,
     default: 0,
   },
 })

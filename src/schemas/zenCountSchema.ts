@@ -1,4 +1,14 @@
-import { Schema, model, models } from 'mongoose'
+import { Schema, model, models, Document } from 'mongoose'
+
+export type IZenCount = {
+  _id: string
+  count: number
+  countDay: number
+  countWeek: number
+  lastMessageTime: Date
+  streak: number
+  bestStreak: number
+} & Document
 
 const zenCountSchema = new Schema({
   _id: {
@@ -7,35 +17,29 @@ const zenCountSchema = new Schema({
   },
   count: {
     type: Number,
-    required: true,
     default: 0,
   },
   countDay: {
     type: Number,
-    required: true,
     default: 0,
   },
   countWeek: {
     type: Number,
-    required: true,
     default: 0,
   },
   lastMessageTime: {
     type: Date,
-    required: true,
     default: new Date(0),
   },
   streak: {
     type: Number,
-    required: true,
     default: 0,
   },
   bestStreak: {
     type: Number,
-    required: true,
     default: 0,
   },
 })
 
 const name = 'ZenCountSchema'
-export default models[name] || model(name, zenCountSchema)
+export default models[name] || model<IZenCount>(name, zenCountSchema)

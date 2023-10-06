@@ -5,12 +5,12 @@ import { client } from '..'
 import { MONGO_URI } from '../config'
 import { MyClient } from '../type'
 
-const connectToMongoDB = (): void => {
+const connectToMongoDB = async (): Promise<void> => {
   console.info('Connecting to the Database')
   try {
-    mongoose.connect(MONGO_URI)
+    await mongoose.connect(MONGO_URI)
   } catch (err) {
-    console.error('Failed to connect to MongoDB.')
+    console.error('Failed to connect to MongoDB.', err)
     process.exit(1)
   }
   console.log('Connected to the Database')
@@ -27,7 +27,7 @@ const setUserActivity = (): void => {
 export default {
   name: Events.ClientReady,
   once: true,
-  execute(client: MyClient) {
+  async execute(client: MyClient) {
     if (!client) {
       console.error('Failed to create client.')
       process.exit(1)
@@ -40,7 +40,7 @@ export default {
 
     setUserActivity()
     console.log('Bot is ready! (' + client?.user?.tag + ')')
-    connectToMongoDB()
+    await connectToMongoDB()
     console.timeEnd('Startup time')
   },
 }

@@ -1,7 +1,8 @@
 import { Events, Message } from 'discord.js'
+import { UpdateQuery } from 'mongoose'
 
 import { NOSE } from '../config'
-import zenCountSchema from '../schemas/zenCountSchema'
+import zenCountSchema, { IZenCount } from '../schemas/zenCountSchema'
 import { isMirrorTime } from '../utils'
 
 export default {
@@ -12,65 +13,67 @@ export default {
   },
 }
 
-const isFirstNose = async (date: Date): Promise<number> => {
+const isFirstNose = async (date: Date): Promise<boolean> => {
+  const oneMinuteAgo = new Date(date.getTime() - 60 * 1000)
   const res = await zenCountSchema.findOne({
-    lastMessageTime: { $lte: date.getMilliseconds() - 60 * 1000 },
+    lastMessageTime: { $lte: oneMinuteAgo },
   })
-  return res === undefined ? 1 : 0
+  return res === undefined ? false : res
+}
+
+const updateZenCount = async (
+  userId: string,
+  updates: UpdateQuery<IZenCount>,
+): Promise<void> => {
+  await zenCountSchema.findOneAndUpdate({ _id: userId }, updates, {
+    upsert: true,
+    new: true,
+  })
+}
+
+const IsZenMessage = (message: Message): boolean => {
+  if (!isMirrorTime()) return false
+
+  if (!NOSE.some((keyword) => message.content.toLowerCase().includes(keyword)))
+    return false
+
+  return true
 }
 
 const handleNezMessage = async (message: Message): Promise<void> => {
+  if (!IsZenMessage(message)) return
+
   const currentDate = new Date()
   const currentTime = currentDate.getTime()
-  if (!isMirrorTime()) return
-
-  const content = message.content.toLowerCase()
-
-  if (!NOSE.some((keyword) => content.includes(keyword))) return
 
   try {
     const userDoc = await zenCountSchema
       .findOne({ _id: message.author.id })
       .exec()
     const lastMessageTime: Date = userDoc?.lastMessageTime || new Date(0)
+    const timeSinceLastMessage = currentTime - lastMessageTime.getTime()
 
-    if (currentTime - lastMessageTime.getTime() < 1000 * 60) {
-      console.log('actual time: ' + new Date())
-      console.log('last message time: ' + lastMessageTime)
-      console.warn('Two nose message in less than 60 sec')
+    if (timeSinceLastMessage < 60 * 1000) {
+      console.warn('2 zen msgs < 60 sec', new Date(), lastMessageTime)
       return
     }
 
-    if (currentTime - lastMessageTime.getTime() < 1000 * 60 * 63) {
-      await zenCountSchema.findOneAndUpdate(
-        { _id: message.author.id },
-        {
-          $inc: { streak: 1 },
-          $max: { bestStreak: userDoc.streak + 1 },
-        },
-        { upsert: true, new: true },
-      )
-    } else {
-      await zenCountSchema.findOneAndUpdate(
-        { _id: message.author.id },
-        {
-          $set: { streak: 1 },
-        },
-        { upsert: true, new: true },
-      )
-    }
+    const isWithinOneHour = timeSinceLastMessage < 60 * 60 * 1000
+    const streakUpdate = isWithinOneHour
+      ? { $inc: { streak: 1 }, $max: { bestStreak: userDoc.streak + 1 } }
+      : { $set: { streak: 1 } }
 
-    await zenCountSchema.findOneAndUpdate(
-      { _id: message.author.id },
-      {
-        $inc: { count: 1, countWeek: 1, countDay: 1 },
-        lastMessageTime: new Date(),
-      },
-      { upsert: true, new: true },
-    )
+    await updateZenCount(message.author.id, streakUpdate)
+
+    await updateZenCount(message.author.id, {
+      $inc: { count: 1, countWeek: 1, countDay: 1 },
+      lastMessageTime: new Date(),
+    })
   } catch (error) {
     console.error('Error handling Nez message:', error)
   }
-  const isDevil = currentDate.getSeconds() >= 55 && isFirstNose(currentDate)
+
+  const isDevil =
+    currentDate.getSeconds() >= 55 && (await isFirstNose(currentDate))
   message.react(isDevil ? '😈' : '👃')
 }
