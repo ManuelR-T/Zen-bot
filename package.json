@@ -5,11 +5,14 @@
   "scripts": {
     "build": "tsc -p config",
     "start": "bun dist/index.js",
-    "fast": "rm -fR ./dist; tsc -p config && bun dist/index.js",
+    "clean": "rm -fR ./dist",
+    "rebuild": "rm -fR ./dist; tsc -p config && bun dist/index.js",
+    "db:start": "docker-compose up -d mongodb",
+    "db:stop": "docker-compose down -v",
     "dev": "bun --watch src/index.ts",
     "commands:update": "bun ./src/deploy-commands.ts",
-    "lint": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts .",
-    "lint:fix": "eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts . --fix"
+    "lint": "bunx eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts .",
+    "lint:fix": "bunx eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts . --fix"
   },
   "keywords": [],
   "author": "",
@@ -19,17 +22,14 @@
     "@discordjs/rest": "^2.0.1",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
-    "discord-api-types": "^0.37.56",
     "discord.js": "^14.13.0",
     "mongodb": "^6.0.0",
     "mongoose": "^7.5.0",
     "node-cron": "^3.0.2"
   },
   "devDependencies": {
-    "@types/node-cron": "^3.0.8",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "^6.5.0",
-    "bun-types": "^1.0.1",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
@@ -38,6 +38,9 @@
     "eslint-plugin-prettier": "latest",
     "eslint-plugin-promise": "^6.1.1",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@types/node-cron": "^3.0.8",
+    "discord-api-types": "^0.37.56",
+    "bun-types": "^1.0.1"
   }
 }

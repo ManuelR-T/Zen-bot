@@ -52,7 +52,17 @@ Before starting, ensure your machine has:
 
 ## 📜 Available Scripts
 
-- **Dev**: Begin the bot in development mode using nodemon and ts-node.
+- **Database**: Perform database operations.
+  - **Start**: Start the database.
+  ```bash
+    bun run db:start
+  ```
+  - **Stop**: Stop the database.
+    ```bash
+      bun run db:stop
+    ```
+
+- **Dev**: Begin the bot in development mode.
   ```bash
     bun run dev
   ```

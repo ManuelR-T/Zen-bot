@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_discord_bot
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata:/data/db
+    environment:
+      MONGO_URI: mongodb://mongodb@127.0.0.1:27017
+
+volumes:
+  dbdata: {}
