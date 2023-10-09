@@ -3,7 +3,7 @@ import { GatewayIntentBits } from 'discord.js'
 import { TOKEN } from './config'
 import cron from './cron'
 import { handleCommands, handleEvents } from './handlers'
-import { MyClient } from './type'
+import { MyClient } from './types'
 
 console.time('Startup time')
 export const client = new MyClient({

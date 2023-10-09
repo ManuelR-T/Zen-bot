@@ -1,17 +1,9 @@
-import { Events, Message } from 'discord.js'
+import { Message } from 'discord.js'
 import { UpdateQuery } from 'mongoose'
+import zenCountSchema, { IZenCount } from 'schemas/zenCountSchema'
 
-import { NOSE } from '../config'
-import zenCountSchema, { IZenCount } from '../schemas/zenCountSchema'
-import { isMirrorTime } from '../utils'
-
-export default {
-  name: Events.MessageCreate,
-  execute: async (message: Message) => {
-    if (message.author.bot) return
-    handleNezMessage(message)
-  },
-}
+import { NOSE } from '@/config'
+import { isMirrorTime } from '@/utils'
 
 const isFirstNose = async (date: Date): Promise<boolean> => {
   const oneMinuteAgo = new Date(date.valueOf() - 60 * 1000)
@@ -43,7 +35,7 @@ const IsZenMessage = (message: Message): boolean => {
   return true
 }
 
-const handleNezMessage = async (message: Message): Promise<void> => {
+const zenMessage = async (message: Message): Promise<void> => {
   if (!IsZenMessage(message)) return
 
   const currentDate = new Date(message.createdTimestamp)
@@ -83,3 +75,5 @@ const handleNezMessage = async (message: Message): Promise<void> => {
 
   message.react(isDevil ? '😈' : '👃')
 }
+
+export default zenMessage

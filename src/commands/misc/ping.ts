@@ -1,12 +1,12 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { CommandInteraction, SlashCommandBuilder } from 'discord.js'
 
-import { Command, CommandExecute } from '../../type'
+import { Command } from '@/types'
 
 const data = new SlashCommandBuilder()
   .setName('ping')
   .setDescription('Replies with Pong!')
 
-const execute: CommandExecute = async (interaction) => {
+const execute = async (interaction: CommandInteraction): Promise<void> => {
   await interaction.reply({
     content: `Pong! This message had a latency of ${
       Date.now() - interaction.createdTimestamp

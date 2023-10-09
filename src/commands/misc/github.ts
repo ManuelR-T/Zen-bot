@@ -1,12 +1,16 @@
-import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders'
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  CommandInteraction,
+} from 'discord.js'
 
-import { Command, CommandExecute } from '../../type'
+import { Command } from '@/types'
 
 const data = new SlashCommandBuilder()
   .setName('github')
   .setDescription('Shows the github repo')
 
-const execute: CommandExecute = async (interaction) => {
+const execute = async (interaction: CommandInteraction): Promise<void> => {
   const embed = new EmbedBuilder()
     .setColor(0x3498db)
     .setTitle('Discord Nose Bot on GitHub')

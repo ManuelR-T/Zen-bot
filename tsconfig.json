@@ -8,14 +8,23 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "outDir": "../dist",
-    "rootDir": "../src",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "types": ["bun-types"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@@/*": ["./*"],
+      "schemas/*": ["src/schemas/*"],
+      "commands/*": ["src/commands/*"],
+      "events/*": ["src/events/*"],
+      "utils/*": ["src/utils/*"],
+    }
   },
   "include": [
-    "../src/**/*.ts"
+    "./src/**/*.ts"
   ],
   "exclude": [
-    "../node_modules"
+    "./node_modules"
   ]
 }

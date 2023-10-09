@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "bunx tsc -p config",
+    "build": "bunx tsc",
     "start": "bun dist/index.js",
     "clean": "rm -fR ./dist",
-    "rebuild": "rm -fR ./dist; tsc -p config && bun dist/index.js",
+    "rebuild": "rm -fR ./dist; tsc && bun dist/index.js",
     "db:start": "docker-compose up -d mongodb",
     "db:stop": "docker-compose down -v",
     "dev": "bun --watch src/index.ts",

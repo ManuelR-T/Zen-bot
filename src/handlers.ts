@@ -1,22 +1,29 @@
 import fs from 'fs'
 import path from 'path'
 
-import { MyClient } from './type'
+import { Events } from 'discord.js'
+
+import { MyClient } from './types'
 
 export const handleEvents = async (client: MyClient): Promise<void> => {
-  const eventsPath = path.join(__dirname, 'events')
-  const eventFiles = fs
-    .readdirSync(eventsPath)
-    .filter((file) => file.endsWith('.js') || file.endsWith('.ts'))
+  const eventFolders = fs
+    .readdirSync(path.join(__dirname, 'events'))
+    .filter((folder) => Object.values(Events).includes(folder as Events))
+  const foldersPath = path.join(__dirname, 'events')
+  for (const folder of eventFolders) {
+    const eventsPath = path.join(foldersPath, folder)
+    const eventFiles = fs
+      .readdirSync(eventsPath)
+      .filter((file) => file === 'index.js' || file === 'index.ts')
+    for (const file of eventFiles) {
+      const filePath = path.join(eventsPath, file)
+      const { default: event } = await import(filePath)
 
-  for (const file of eventFiles) {
-    const filePath = path.join(eventsPath, file)
-    const { default: event } = await import(filePath)
-
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args))
-    } else {
-      client.on(event.name, (...args) => event.execute(...args))
+      if (event.once) {
+        client.once(event.name, (...args) => event.listener(...args))
+      } else {
+        client.on(event.name, (...args) => event.listener(...args))
+      }
     }
   }
 }

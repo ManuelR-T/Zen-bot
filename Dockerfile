@@ -2,9 +2,8 @@ FROM oven/bun:latest as builder
 
 WORKDIR /app
 
-COPY package.json bun.lockb ./
+COPY package.json bun.lockb tsconfig.json ./
 COPY src ./src
-COPY config/tsconfig.json ./config/
 
 RUN bun install
 RUN bun run build

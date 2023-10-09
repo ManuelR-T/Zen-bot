@@ -1,15 +1,19 @@
 import {
-  CommandInteraction,
   Client,
   Collection,
+  CommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js'
 
-export type CommandExecute = (interaction: CommandInteraction) => Promise<void>
-
 export type Command = {
   data: SlashCommandBuilder
-  execute: CommandExecute
+  execute: (interaction: CommandInteraction) => Promise<void>
+}
+
+export type Event = {
+  name: string
+  once?: boolean
+  listener: (...args: unknown[]) => Promise<void>
 }
 
 export class MyClient extends Client {

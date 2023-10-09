@@ -5,7 +5,7 @@ import { Routes } from 'discord-api-types/v10'
 import { REST } from 'discord.js'
 
 import { TOKEN, CLIENT_ID } from './config'
-import { Command } from './type'
+import { Command } from './types'
 
 const commands: Command[] = []
 const foldersPath = join(__dirname, 'commands')

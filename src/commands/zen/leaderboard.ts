@@ -1,8 +1,8 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
+import zenCountSchema from 'schemas/zenCountSchema'
 
-import zenCountSchema from '../../schemas/zenCountSchema'
-import { Command, CommandExecute } from '../../type'
-import { newEmbedLeaderboard } from '../../utils'
+import { Command } from '@/types'
+import { newEmbedLeaderboard } from '@/utils'
 
 const data = new SlashCommandBuilder()
   .setName('leaderboard')
@@ -35,7 +35,7 @@ const data = new SlashCommandBuilder()
       .setRequired(false),
   )
 
-const execute: CommandExecute = async (interaction) => {
+const execute = async (interaction: CommandInteraction): Promise<void> => {
   try {
     const hidden = interaction.options.get('hidden')?.value as boolean
     const time =

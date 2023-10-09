@@ -3,11 +3,10 @@ import {
   CommandInteractionOptionResolver,
   SlashCommandBuilder,
 } from 'discord.js'
-
-import wordleManager from '../../games/wordle'
-import { getRandomWord } from '../../games/wordle/words'
-import { Command, CommandExecute } from '../../type'
-import { stringToEmoji } from '../../utils'
+import wordleManager from 'src/games/wordle'
+import { getRandomWord } from 'src/games/wordle/words'
+import { Command } from 'src/types'
+import { stringToEmoji } from 'src/utils'
 
 const data = new SlashCommandBuilder()
   .setName('wordle')
@@ -27,9 +26,9 @@ const data = new SlashCommandBuilder()
       ),
   )
 
-const execute: CommandExecute = async (interaction: CommandInteraction) => {
+const execute = async (interaction: CommandInteraction): Promise<void> => {
   if (!interaction.isCommand()) return
-
+  CommandInteraction
   const subcommand = (
     interaction.options as CommandInteractionOptionResolver
   ).getSubcommand()
