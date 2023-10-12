@@ -8,7 +8,9 @@ export type IZenCount = {
   lastMessageTime: Date
   streak: number
   bestStreak: number
-} & Document
+}
+
+type ZenCount = IZenCount & Document
 
 const zenCountSchema = new Schema({
   _id: {
@@ -42,4 +44,4 @@ const zenCountSchema = new Schema({
 })
 
 const name = 'ZenCountSchema'
-export default models[name] || model<IZenCount>(name, zenCountSchema)
+export default models[name] || model<ZenCount>(name, zenCountSchema)
