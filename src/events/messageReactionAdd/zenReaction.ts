@@ -1,5 +1,5 @@
 import { MessageReaction, User } from 'discord.js'
-import zenCountSchema from 'schemas/zenCountSchema'
+import zenCountSchema, { IZenCount } from 'schemas/zenCountSchema'
 
 import { NOSE } from '@/config'
 import { isMirrorTime, incZenCount } from '@/utils'
@@ -10,14 +10,18 @@ const zenReaction = async (
 ): Promise<void> => {
   const currentDate = new Date()
   if (user.id === null) return
-  if (!isMirrorTime()) return
+  if (!isMirrorTime(currentDate)) return
 
   const emote = reaction.emoji.name
 
   if (emote === null || !NOSE.some((keyword) => emote === keyword)) return
 
   try {
-    const userDoc = await zenCountSchema.findOne({ _id: user.id }).exec()
+    const userDoc: Pick<IZenCount, 'lastMessageTime' | 'streak'> | null =
+      await zenCountSchema
+        .findOne({ _id: user.id })
+        .select('lastMessageTime streak')
+        .exec()
     const lastMessageTime: Date = userDoc?.lastMessageTime || new Date(0)
 
     const timeSinceLastMessage =

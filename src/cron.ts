@@ -15,7 +15,7 @@ async function resetFields(
 
 export default (): void => {
   // 2am every day
-  cron.schedule('0 2 * * *', async () => resetFields({ countDay: 0 }))
+  cron.schedule('0 2 * * *', async () => await resetFields({ countDay: 0 }))
   // 2am every Monday
-  cron.schedule('0 2 * * 1', async () => resetFields({ countWeek: 0 }))
+  cron.schedule('0 2 * * 1', async () => await resetFields({ countWeek: 0 }))
 }

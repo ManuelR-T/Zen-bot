@@ -54,9 +54,9 @@ Before starting, ensure your machine has:
 
 - **Database**: Perform database operations.
   - **Start**: Start the database.
-  ```bash
-    bun run db:start
-  ```
+    ```bash
+      bun run db:start
+    ```
   - **Stop**: Stop the database.
     ```bash
       bun run db:stop
@@ -74,9 +74,9 @@ Before starting, ensure your machine has:
 
 - **Test**: Execute the tests.
   - **Test**: Execute the tests one time.
-  ```bash
-    bun test
-  ```
+    ```bash
+      bun test
+    ```
   - **Watch**: Execute the tests in watch mode.
     ```bash
       bun test --watch
