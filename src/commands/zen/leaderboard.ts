@@ -1,8 +1,9 @@
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
-import zenCountSchema from 'schemas/zenCountSchema'
 
+import { TUser, userModel } from '@/schemas/userSchema'
 import { Command } from '@/types'
 import { newEmbedLeaderboard } from '@/utils'
+import logger from '@/utils/logger'
 
 const data = new SlashCommandBuilder()
   .setName('leaderboard')
@@ -60,7 +61,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
 
     await interaction.reply({ embeds: [embed], ephemeral: hidden })
   } catch (error) {
-    console.error('Error getting leaderboard:', error)
+    logger.error('Error getting leaderboard:', error)
   }
 }
 
@@ -68,13 +69,13 @@ const getLeaderboard = async (
   time: string,
   userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
-  let sortfield = 'count'
+  let sortfield: keyof TUser = 'count'
   if (time === 'weekly') {
     sortfield = 'countWeek'
   } else if (time === 'daily') {
     sortfield = 'countDay'
   }
-  const results = await zenCountSchema
+  const results: TUser[] = await userModel
     .find({ [sortfield]: { $gt: 0 } })
     .sort({ [sortfield]: -1 })
     .limit(userNb)

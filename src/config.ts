@@ -1,29 +1,22 @@
-function getEnvVar(variable: string, defaultValue: string = ''): string {
-  const value = process?.env[variable] || defaultValue
-  if (!value) {
-    console.error(`Environment variable ${variable} is not defined.`)
+export default class Config {
+  private static getEnv(variable: string, defaultValue?: string): string {
+    const value = process.env[variable] || defaultValue
+    if (value === undefined) {
+      throw new Error(
+        `Env variable ${variable} is not defined and no default value provided.`,
+      )
+    }
+    return value
   }
-  return value
+
+  static readonly TOKEN: string = Config.getEnv('TOKEN')
+  static readonly CLIENT_ID: string = Config.getEnv('CLIENT_ID')
+  static readonly MONGO_URI: string = Config.getEnv(
+    'MONGO_URI',
+    'mongodb://127.0.0.1:27017',
+  )
+  static readonly ZEN = {
+    emojis: ['👃', '🐽', '☯', '🐉', '🐲'],
+    keywords: ['nez', 'zen', 'nose', 'noz', 'ttn'],
+  }
 }
-
-export const TOKEN = getEnvVar('TOKEN', 'Token')
-export const MONGO_URI = getEnvVar('MONGO_URI', 'mongodb://127.0.0.1:27017')
-export const CLIENT_ID = getEnvVar('CLIENT_ID', 'Client ID')
-
-export const NOSE = [
-  'nez',
-  'zen',
-  'nose',
-  'noz',
-  'ttn',
-  '👃',
-  '👃🏻',
-  '👃🏼',
-  '👃🏽',
-  '👃🏾',
-  '👃🏿',
-  '🐽',
-  '☯',
-  '🐉',
-  '🐲',
-]

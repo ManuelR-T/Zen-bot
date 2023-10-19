@@ -1,6 +1,7 @@
 import { Events, Interaction } from 'discord.js'
 
 import { MyClient, Event } from '@/types'
+import logger from '@/utils/logger'
 
 const listener = async (interaction: Interaction): Promise<void> => {
   if (!interaction.isChatInputCommand()) return
@@ -9,14 +10,14 @@ const listener = async (interaction: Interaction): Promise<void> => {
   const command = client.commands.get(interaction.commandName)
 
   if (!command) {
-    console.error(`No command matching ${interaction.commandName} was found.`)
+    logger.error(`No command matching ${interaction.commandName} was found.`)
     return
   }
 
   try {
     await command.execute(interaction)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await interaction.followUp({
       content: 'There was an error while executing this command!',
       ephemeral: true,

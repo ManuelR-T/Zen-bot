@@ -1,8 +1,9 @@
 import { MessageReaction, User } from 'discord.js'
-import zenCountSchema, { IZenCount } from 'schemas/zenCountSchema'
+import { TUser, userModel } from 'schemas/userSchema'
 
-import { NOSE } from '@/config'
+import Config from '@/config'
 import { isMirrorTime, incZenCount } from '@/utils'
+import logger from '@/utils/logger'
 
 const zenReaction = async (
   reaction: MessageReaction,
@@ -14,11 +15,12 @@ const zenReaction = async (
 
   const emote = reaction.emoji.name
 
-  if (emote === null || !NOSE.some((keyword) => emote === keyword)) return
+  if (emote === null || !Config.ZEN.emojis.some((keyword) => emote === keyword))
+    return
 
   try {
-    const userDoc: Pick<IZenCount, 'lastMessageTime' | 'streak'> | null =
-      await zenCountSchema
+    const userDoc: Pick<TUser, 'lastMessageTime' | 'streak'> | null =
+      await userModel
         .findOne({ _id: user.id })
         .select('lastMessageTime streak')
         .exec()
@@ -28,7 +30,11 @@ const zenReaction = async (
       currentDate.getTime() - lastMessageTime.getTime()
 
     if (timeSinceLastMessage < 60 * 1000) {
-      console.log('2 zen msgs < 60 sec', currentDate, lastMessageTime)
+      logger.info(
+        `2 zen msgs < 60 sec ${user.displayName}`,
+        currentDate,
+        lastMessageTime,
+      )
       return
     }
 
@@ -39,7 +45,7 @@ const zenReaction = async (
       userDoc?.streak,
     )
   } catch (error) {
-    console.error('Error handling Nez message:', error)
+    logger.error('Error handling Nez message:', error)
   }
 }
 

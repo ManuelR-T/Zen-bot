@@ -1,17 +1,19 @@
 import { UpdateQuery } from 'mongoose'
-import zenCountSchema, { IZenCount } from 'schemas/zenCountSchema'
+
+import { TUser, userModel } from '@/schemas/userSchema'
+import logger from '@/utils/logger'
 
 const updateZenCount = async (
   userId: string,
-  updates: UpdateQuery<Partial<IZenCount>>,
+  updates: UpdateQuery<Partial<TUser>>,
 ): Promise<void> => {
   try {
-    await zenCountSchema.findOneAndUpdate({ _id: userId }, updates, {
+    await userModel.findOneAndUpdate({ _id: userId }, updates, {
       upsert: true,
       new: true,
     })
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     throw new Error('Database operation failed')
   }
 }

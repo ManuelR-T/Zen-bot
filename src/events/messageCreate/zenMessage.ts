@@ -1,37 +1,46 @@
 import { Message } from 'discord.js'
-import zenCountSchema, { IZenCount } from 'schemas/zenCountSchema'
 
-import { NOSE } from '@/config'
+import Config from '@/config'
+import { TUser, userModel } from '@/schemas/userSchema'
 import { isMirrorTime, incZenCount } from '@/utils'
+import logger from '@/utils/logger'
 
 const isFirstNose = async (date: Date): Promise<boolean> => {
-  const oneMinuteAgo = new Date(date.getTime() - 60 * 1000)
+  const oneMinuteAgo = new Date(date.valueOf() - 60 * 1000)
   try {
-    const res: Pick<IZenCount, '_id'> | null = await zenCountSchema
+    const res: Pick<TUser, '_id'> | null = await userModel
       .findOne({ lastMessageTime: { $gte: oneMinuteAgo } })
       .select('_id')
       .exec()
     return res === null
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     throw new Error('Database operation failed')
   }
 }
 
-const isZenMessage = (message: Message, date: Date): boolean => {
+const getEmoji = (message: Message, date: Date): string | null => {
+  if (!isMirrorTime(date)) return null
+
+  const isZenMessage = Config.ZEN.keywords.some((keyword) =>
+    message.content.toLowerCase().includes(keyword),
+  )
+
+  if (isZenMessage) return '👃'
+
   return (
-    isMirrorTime(date) &&
-    NOSE.some((keyword) => message.content.toLowerCase().includes(keyword))
+    Config.ZEN.emojis.find((emoji) => message.content.includes(emoji)) || null
   )
 }
 
 const zenMessage = async (message: Message): Promise<void> => {
-  const currentDate = new Date(message.createdTimestamp)
+  const currentDate = new Date()
+  const emoji = getEmoji(message, currentDate)
 
-  if (!isZenMessage(message, currentDate)) return
+  if (emoji === null) return
 
-  const userDoc: Pick<IZenCount, 'lastMessageTime' | 'streak'> | null =
-    await zenCountSchema
+  const userDoc: Pick<TUser, 'lastMessageTime' | 'streak'> | null =
+    await userModel
       .findOne({ _id: message.author.id })
       .select('lastMessageTime streak')
       .exec()
@@ -40,10 +49,15 @@ const zenMessage = async (message: Message): Promise<void> => {
   const timeSinceLastMessage = currentDate.getTime() - lastMessageTime.getTime()
 
   if (timeSinceLastMessage < 60 * 1000) {
-    console.log('2 zen msgs < 60 sec', currentDate, lastMessageTime)
+    logger.info(
+      `2 zen msgs < 60 sec ${message.author.displayName}`,
+      currentDate,
+      lastMessageTime,
+    )
     return
   }
 
+  const firstNose = await isFirstNose(currentDate)
   await incZenCount(
     message.author.id,
     currentDate,
@@ -51,11 +65,7 @@ const zenMessage = async (message: Message): Promise<void> => {
     userDoc?.streak,
   )
 
-  message.react(
-    currentDate.getSeconds() >= 55 && (await isFirstNose(currentDate))
-      ? '😈'
-      : '👃',
-  )
+  message.react(currentDate.getSeconds() >= 55 && firstNose ? '😈' : emoji)
 }
 
 export default zenMessage

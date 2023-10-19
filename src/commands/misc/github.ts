@@ -7,6 +7,7 @@ import {
 
 import { Command } from '@/types'
 import { pluralize } from '@/utils'
+import logger from '@/utils/logger'
 
 type RepoData = {
   name: string
@@ -38,7 +39,7 @@ async function getRepoData(owner: string, repo: string): Promise<RepoData> {
 
     return values
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     throw new Error('Failed to fetch repository star count')
   }
 }

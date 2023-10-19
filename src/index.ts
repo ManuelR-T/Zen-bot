@@ -1,11 +1,11 @@
 import { GatewayIntentBits } from 'discord.js'
 
-import { TOKEN } from './config'
 import cron from './cron'
 import { handleCommands, handleEvents } from './handlers'
 import { MyClient } from './types'
 
-console.time('Startup time')
+import Config from '@/config'
+
 export const client = new MyClient({
   intents: [
     GatewayIntentBits.Guilds,
@@ -19,4 +19,4 @@ handleCommands(client)
 handleEvents(client)
 cron()
 
-client.login(TOKEN)
+client.login(Config.TOKEN)

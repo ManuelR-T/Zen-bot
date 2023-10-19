@@ -1,15 +1,14 @@
 import cron from 'node-cron'
 
-import zenCountSchema from './schemas/zenCountSchema'
+import { userModel, TUser } from './schemas/userSchema'
+import logger from './utils/logger'
 
-async function resetFields(
-  fieldsToUpdate: Record<string, string | number | Date>,
-): Promise<void> {
+async function resetFields(fieldsToUpdate: Partial<TUser>): Promise<void> {
   try {
-    await zenCountSchema.updateMany({}, { $set: fieldsToUpdate })
-    console.log('Fields have been reset')
+    await userModel.updateMany({}, { $set: fieldsToUpdate })
+    logger.info('Fields have been reset')
   } catch (error) {
-    console.error('Error resetting fields:', error)
+    logger.error('Error resetting fields:', error)
   }
 }
 

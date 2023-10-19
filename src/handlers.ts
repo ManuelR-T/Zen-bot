@@ -5,6 +5,8 @@ import { Events } from 'discord.js'
 
 import { MyClient } from './types'
 
+import logger from '@/utils/logger'
+
 export const handleEvents = async (client: MyClient): Promise<void> => {
   const eventFolders = fs
     .readdirSync(path.join(__dirname, 'events'))
@@ -43,12 +45,12 @@ export const handleCommands = async (client: MyClient): Promise<void> => {
         if ('data' in command && 'execute' in command) {
           client.commands.set(command.data.name, command)
         } else {
-          console.warn(
+          logger.warn(
             `The command at ${filePath} is missing a required "data" or "execute" property.`,
           )
         }
       } catch (error) {
-        console.error(`Failed to load command at ${filePath}:`, error)
+        logger.error(`Failed to load command at ${filePath}:`, error)
       }
     }
   }

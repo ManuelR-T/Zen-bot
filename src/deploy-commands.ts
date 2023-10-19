@@ -4,8 +4,10 @@ import { join } from 'path'
 import { Routes } from 'discord-api-types/v10'
 import { REST } from 'discord.js'
 
-import { TOKEN, CLIENT_ID } from './config'
 import { Command } from './types'
+import logger from './utils/logger'
+
+import Config from '@/config'
 
 const commands: Command[] = []
 const foldersPath = join(__dirname, 'commands')
@@ -27,35 +29,45 @@ async function loadCommands(): Promise<void> {
         if ('data' in command && 'execute' in command) {
           commands.push(command.data.toJSON())
         } else {
-          console.warn(
+          logger.warn(
             `The command at ${filePath} is missing a required "data" or "execute" property.`,
           )
         }
       } catch (error) {
-        console.error(`Failed to load command at ${filePath}:`, error)
+        logger.error(`Failed to load command at ${filePath}:`, error)
       }
     }
   }
 }
 
-const rest = new REST().setToken(TOKEN)
+const rest = new REST().setToken(Config.TOKEN)
 
-;(async () => {
+const refreshApplicationCommands = async (): Promise<void> => {
   try {
     await loadCommands()
 
-    console.log(
+    logger.info(
       `Started refreshing ${commands.length} application (/) commands.`,
     )
 
-    const data = (await rest.put(Routes.applicationCommands(CLIENT_ID), {
-      body: commands,
-    })) as Array<{ name: string }>
+    const data = await sendCommandRequest()
 
-    console.log(
+    logger.info(
       `Successfully reloaded ${data.length} application (/) commands.`,
     )
   } catch (error) {
-    console.error(error)
+    logger.error(error)
   }
-})()
+}
+
+const sendCommandRequest = async (): Promise<unknown[]> => {
+  const response = await rest.put(
+    Routes.applicationCommands(Config.CLIENT_ID),
+    {
+      body: commands,
+    },
+  )
+  return response as Array<unknown>
+}
+
+refreshApplicationCommands()

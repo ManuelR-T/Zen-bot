@@ -1,8 +1,9 @@
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
-import zenCountSchema from 'schemas/zenCountSchema'
 
+import { userModel } from '@/schemas/userSchema'
 import { Command } from '@/types'
 import { newEmbedLeaderboard } from '@/utils'
+import logger from '@/utils/logger'
 
 const data = new SlashCommandBuilder()
   .setName('streak')
@@ -43,7 +44,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
 
     await interaction.reply({ embeds: [embed], ephemeral: hidden })
   } catch (error) {
-    console.error('Error getting streak leaderboard:', error)
+    logger.error('Error getting streak leaderboard:', error)
   }
 }
 
@@ -85,7 +86,7 @@ const getStreakLeaderboard = async (
 ): Promise<Array<{ name: string; value: string }>> => {
   const lastMirrorTime = getLastMirrorTime()
 
-  const usersToMark = await zenCountSchema.find({
+  const usersToMark = await userModel.find({
     lastMessageTime: { $ne: lastMirrorTime },
     streak: { $gt: 0 },
   })
@@ -95,7 +96,7 @@ const getStreakLeaderboard = async (
     await user.save()
   }
 
-  const results = await zenCountSchema
+  const results = await userModel
     .find({ streak: { $gt: 0 } })
     .sort({ streak: -1 })
     .limit(userNb)
