@@ -1,9 +1,11 @@
+import { Prisma, PrismaClient } from '@prisma/client'
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
 
-import { TUser, userModel } from '@/schemas/userSchema'
 import { Command } from '@/types'
 import { newEmbedLeaderboard } from '@/utils'
 import logger from '@/utils/logger'
+
+const prisma = new PrismaClient()
 
 const data = new SlashCommandBuilder()
   .setName('leaderboard')
@@ -69,17 +71,24 @@ const getLeaderboard = async (
   time: string,
   userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
-  let sortfield: keyof TUser = 'count'
+  let sortfield: keyof Prisma.UserCreateInput = 'count'
   if (time === 'weekly') {
     sortfield = 'countWeek'
   } else if (time === 'daily') {
     sortfield = 'countDay'
   }
-  const results: TUser[] = await userModel
-    .find({ [sortfield]: { $gt: 0 } })
-    .sort({ [sortfield]: -1 })
-    .limit(userNb)
-    .exec()
+
+  const results = await prisma.user.findMany({
+    where: {
+      [sortfield]: {
+        gt: 0,
+      },
+    },
+    orderBy: {
+      [sortfield]: 'desc',
+    },
+    take: userNb,
+  })
 
   return results.map((result, index) => {
     const rankIcon =
@@ -87,7 +96,7 @@ const getLeaderboard = async (
     const count = result[sortfield]
     return {
       name: `${rankIcon}          ${count} ${count === 1 ? 'time' : 'times'}`,
-      value: `<@${result._id}> `,
+      value: `<@${result.id}> `,
       inline: true,
     }
   })

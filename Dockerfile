@@ -1,18 +1,22 @@
-FROM oven/bun:latest as builder
+FROM node:latest AS builder
 
 WORKDIR /app
 
-COPY package.json bun.lockb tsconfig.json ./
+COPY package.json tsconfig.json ./
 COPY src ./src
+COPY prisma ./prisma
 
-RUN bun install
-RUN bun run build
+RUN npm install && \
+    npx prisma generate && \
+    npx tsc && \
+    rm -rf package-lock.json prisma
 
 FROM oven/bun:latest
 
 WORKDIR /app
-COPY --from=builder /app .
+COPY --from=builder /app/ .
 COPY data /app/data
+COPY bun.lockb ./bun.lockb
 RUN bun install --production
 
 CMD bun run start

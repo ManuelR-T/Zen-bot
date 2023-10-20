@@ -1,16 +1,28 @@
-import { UpdateQuery } from 'mongoose'
+import { Prisma, PrismaClient } from '@prisma/client'
 
-import { TUser, userModel } from '@/schemas/userSchema'
 import logger from '@/utils/logger'
 
+const prisma = new PrismaClient()
+
+const defaultUserCreate = (id: string): Prisma.UserCreateInput => ({
+  id,
+  count: 1,
+  countWeek: 1,
+  countDay: 1,
+  streak: 1,
+  bestStreak: 1,
+  lastZen: new Date(),
+})
+
 const updateZenCount = async (
-  userId: string,
-  updates: UpdateQuery<Partial<TUser>>,
+  id: string,
+  updates: Prisma.UserUpdateInput,
 ): Promise<void> => {
   try {
-    await userModel.findOneAndUpdate({ _id: userId }, updates, {
-      upsert: true,
-      new: true,
+    await prisma.user.upsert({
+      where: { id },
+      update: updates,
+      create: defaultUserCreate(id),
     })
   } catch (error) {
     logger.error(error)
@@ -27,15 +39,40 @@ export const incZenCount = async (
 ): Promise<void> => {
   const queryUpdate = isStreak
     ? {
-        $inc: { streak: inc, count: inc, countWeek: inc, countDay: inc },
-        $max: { bestStreak: (streak || 0) + inc },
-        lastMessageTime: currentDate,
+        count: {
+          increment: inc,
+        },
+        countWeek: {
+          increment: inc,
+        },
+        countDay: {
+          increment: inc,
+        },
+        streak: {
+          increment: inc,
+        },
+        bestStreak: {
+          set: Math.max(streak + inc, streak),
+        },
+        lastZen: currentDate,
       }
     : {
-        $max: { bestStreak: inc },
-        $set: { streak: inc },
-        $inc: { count: inc, countWeek: inc, countDay: inc },
-        lastMessageTime: currentDate,
+        count: {
+          increment: inc,
+        },
+        countWeek: {
+          increment: inc,
+        },
+        countDay: {
+          increment: inc,
+        },
+        streak: {
+          set: inc,
+        },
+        bestStreak: {
+          set: inc,
+        },
+        lastZen: currentDate,
       }
 
   await updateZenCount(id, queryUpdate)

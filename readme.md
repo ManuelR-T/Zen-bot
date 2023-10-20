@@ -11,7 +11,7 @@
 6. [Contributing](#-contributing)
 ## 🌐 Overview
 
-Welcome to the **Zen Bot Project**! This project offers a Discord bot using `discord.js` and `MongoDB` for database operations.
+Welcome to the **Zen Bot Project**! This project offers a Discord bot using `discord.js` and `MongoDB` with `Prisma` for database operations.
 
 ## 🌟 Features
 
@@ -27,8 +27,7 @@ Before starting, ensure your machine has:
 
 1. [Node.js](https://nodejs.org/)
 2. [Bun](https://bun.sh/)
-3. [MongoDB](https://www.mongodb.com/)
-4. A [Discord application](https://discord.com/developers/applications) and bot setup. Refer to [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
+3. A [Discord application](https://discord.com/developers/applications) and bot setup. Refer to [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
 
 ## 🚀 Setup and Installation
 
@@ -92,7 +91,7 @@ Before starting, ensure your machine has:
 - **Core Libraries:**
   - `discord.js`: Interact with the Discord API.
   - `dotenv`: Load environment variables from `.env` files.
-  - `mongodb & mongoose`: Handle MongoDB operations effectively.
+  - `prisma`: Handle MongoDB operations effectively.
 
 - **Development Tools:**
   - Utilizes TypeScript, ESLint, and Prettier for development excellence.

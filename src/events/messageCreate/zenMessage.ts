@@ -1,18 +1,26 @@
+import { PrismaClient } from '@prisma/client'
 import { Message } from 'discord.js'
 
 import Config from '@/config'
-import { TUser, userModel } from '@/schemas/userSchema'
 import { isMirrorTime, incZenCount } from '@/utils'
 import logger from '@/utils/logger'
+
+const prisma = new PrismaClient()
 
 const isFirstNose = async (date: Date): Promise<boolean> => {
   const oneMinuteAgo = new Date(date.valueOf() - 60 * 1000)
   try {
-    const res: Pick<TUser, '_id'> | null = await userModel
-      .findOne({ lastMessageTime: { $gte: oneMinuteAgo } })
-      .select('_id')
-      .exec()
-    return res === null
+    const user = await prisma.user.findFirst({
+      where: {
+        lastZen: {
+          gte: oneMinuteAgo,
+        },
+      },
+      select: {
+        id: true,
+      },
+    })
+    return !user
   } catch (error) {
     logger.error(error)
     throw new Error('Database operation failed')
@@ -39,20 +47,24 @@ const zenMessage = async (message: Message): Promise<void> => {
 
   if (emoji === null) return
 
-  const userDoc: Pick<TUser, 'lastMessageTime' | 'streak'> | null =
-    await userModel
-      .findOne({ _id: message.author.id })
-      .select('lastMessageTime streak')
-      .exec()
+  const user = await prisma.user.findUnique({
+    where: {
+      id: message.author.id,
+    },
+    select: {
+      lastZen: true,
+      streak: true,
+    },
+  })
 
-  const lastMessageTime: Date = userDoc?.lastMessageTime || new Date(0)
-  const timeSinceLastMessage = currentDate.getTime() - lastMessageTime.getTime()
+  const lastZen: Date = user?.lastZen || new Date(0)
+  const timeSinceLastMessage = currentDate.getTime() - lastZen.getTime()
 
   if (timeSinceLastMessage < 60 * 1000) {
     logger.info(
       `2 zen msgs < 60 sec ${message.author.displayName}`,
       currentDate,
-      lastMessageTime,
+      lastZen,
     )
     return
   }
@@ -62,7 +74,7 @@ const zenMessage = async (message: Message): Promise<void> => {
     message.author.id,
     currentDate,
     timeSinceLastMessage < 60 * (60 + 1) * 1000,
-    userDoc?.streak,
+    user?.streak,
   )
 
   message.react(currentDate.getSeconds() >= 55 && firstNose ? '😈' : emoji)

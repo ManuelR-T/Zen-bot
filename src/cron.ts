@@ -1,11 +1,17 @@
+import { Prisma, PrismaClient } from '@prisma/client'
 import cron from 'node-cron'
 
-import { userModel, TUser } from './schemas/userSchema'
 import logger from './utils/logger'
 
-async function resetFields(fieldsToUpdate: Partial<TUser>): Promise<void> {
+const prisma = new PrismaClient()
+
+async function resetFields(
+  fieldsToUpdate: Prisma.UserUpdateInput,
+): Promise<void> {
   try {
-    await userModel.updateMany({}, { $set: fieldsToUpdate })
+    await prisma.user.updateMany({
+      data: fieldsToUpdate,
+    })
     logger.info('Fields have been reset')
   } catch (error) {
     logger.error('Error resetting fields:', error)

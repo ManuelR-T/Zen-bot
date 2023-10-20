@@ -1,9 +1,11 @@
+import { PrismaClient } from '@prisma/client'
 import { MessageReaction, User } from 'discord.js'
-import { TUser, userModel } from 'schemas/userSchema'
 
 import Config from '@/config'
 import { isMirrorTime, incZenCount } from '@/utils'
 import logger from '@/utils/logger'
+
+const prisma = new PrismaClient()
 
 const zenReaction = async (
   reaction: MessageReaction,
@@ -19,21 +21,24 @@ const zenReaction = async (
     return
 
   try {
-    const userDoc: Pick<TUser, 'lastMessageTime' | 'streak'> | null =
-      await userModel
-        .findOne({ _id: user.id })
-        .select('lastMessageTime streak')
-        .exec()
-    const lastMessageTime: Date = userDoc?.lastMessageTime || new Date(0)
+    const userDoc = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        lastZen: true,
+        streak: true,
+      },
+    })
 
-    const timeSinceLastMessage =
-      currentDate.getTime() - lastMessageTime.getTime()
+    const lastZen: Date = userDoc?.lastZen || new Date(0)
+    const timeSinceLastMessage = currentDate.getTime() - lastZen.getTime()
 
     if (timeSinceLastMessage < 60 * 1000) {
       logger.info(
         `2 zen msgs < 60 sec ${user.displayName}`,
         currentDate,
-        lastMessageTime,
+        lastZen,
       )
       return
     }

@@ -11,10 +11,6 @@ export default class Config {
 
   static readonly TOKEN: string = Config.getEnv('TOKEN')
   static readonly CLIENT_ID: string = Config.getEnv('CLIENT_ID')
-  static readonly MONGO_URI: string = Config.getEnv(
-    'MONGO_URI',
-    'mongodb://127.0.0.1:27017',
-  )
   static readonly ZEN = {
     emojis: ['👃', '🐽', '☯', '🐉', '🐲'],
     keywords: ['nez', 'zen', 'nose', 'noz', 'ttn'],

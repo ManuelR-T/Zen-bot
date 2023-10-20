@@ -1,6 +1,9 @@
 name: Quality
 
 on: [workflow_call]
+env:
+  MONGO_URI: 'mongodb://127.0.0.1:27017/zen?replicaSet=rs0'
+
 jobs:
   lint:
     name: Lint
@@ -17,9 +20,14 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/bun.lockb', '**/prisma/schema.prisma') }}
       - name: Install dependencies (if cache miss)
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: bun install
+      - name: Generate Prisma Client
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: bunx prisma generate
+      - name: Validate Prisma schema
+        run: npx prisma validate
       - name: Run ESLint
         run: bun run lint

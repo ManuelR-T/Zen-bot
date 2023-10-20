@@ -1,9 +1,11 @@
+import { PrismaClient } from '@prisma/client'
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
 
-import { userModel } from '@/schemas/userSchema'
 import { Command } from '@/types'
 import { newEmbedLeaderboard } from '@/utils'
 import logger from '@/utils/logger'
+
+const prisma = new PrismaClient()
 
 const data = new SlashCommandBuilder()
   .setName('streak')
@@ -86,21 +88,39 @@ const getStreakLeaderboard = async (
 ): Promise<Array<{ name: string; value: string }>> => {
   const lastMirrorTime = getLastMirrorTime()
 
-  const usersToMark = await userModel.find({
-    lastMessageTime: { $ne: lastMirrorTime },
-    streak: { $gt: 0 },
+  const usersToMark = await prisma.user.findMany({
+    where: {
+      lastZen: {
+        not: lastMirrorTime,
+      },
+      streak: {
+        gt: 0,
+      },
+    },
   })
 
   for (const user of usersToMark) {
-    user.streak = 0
-    await user.save()
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        streak: 0,
+      },
+    })
   }
 
-  const results = await userModel
-    .find({ streak: { $gt: 0 } })
-    .sort({ streak: -1 })
-    .limit(userNb)
-    .exec()
+  const results = await prisma.user.findMany({
+    where: {
+      streak: {
+        gt: 0,
+      },
+    },
+    orderBy: {
+      streak: 'desc',
+    },
+    take: userNb,
+  })
 
   return results.map((result) => {
     const streak = result.streak
@@ -120,7 +140,7 @@ const getStreakLeaderboard = async (
       name: `${emoji} ${streak} ${
         streak === 1 ? 'streak' : 'streaks'
       } (best : ${result.bestStreak})`,
-      value: `<@${result._id}> `,
+      value: `<@${result.id}> `,
       inline: true,
     }
   })

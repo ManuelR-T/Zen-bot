@@ -2,8 +2,6 @@ name: Deploy
 on:
   workflow_call:
     secrets:
-      FLY_API_TOKEN:
-        required: true
       TOKEN:
         required: true
       CLIENT_ID:
@@ -25,10 +23,13 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/bun.lockb', '**/prisma/schema.prisma') }}
       - name: Install dependencies (if cache miss)
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: bun install
+      - name: Generate Prisma Client
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: bunx prisma generate
 
       - name: Upload command list
         run: bun run commands:update

@@ -1,6 +1,5 @@
 import { Events } from 'discord.js'
 
-import connectMongo from './connectMongo'
 import { client } from '../../'
 
 import { MyClient, Event } from '@/types'
@@ -27,7 +26,6 @@ const listener = async (client: MyClient): Promise<void> => {
 
   setUserActivity()
   logger.info('Bot is ready! (' + client?.user?.tag + ')')
-  await connectMongo()
 }
 
 export default {
