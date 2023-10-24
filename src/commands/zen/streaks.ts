@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
+import { isSameHour, isSameMinute } from 'date-fns'
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
 
 import { Command } from '@/types'
-import { newEmbedLeaderboard } from '@/utils'
+import { newEmbedLeaderboard, getLastMirrorTime } from '@/utils'
 import logger from '@/utils/logger'
-
-const prisma = new PrismaClient()
 
 const data = new SlashCommandBuilder()
   .setName('streak')
@@ -27,11 +26,69 @@ const data = new SlashCommandBuilder()
       .setRequired(false),
   )
 
+const prisma = new PrismaClient()
+
+const findUsersToMark = async (
+  lastMirrorDate: Date,
+): Promise<Pick<Required<Prisma.UserCreateInput>, 'id' | 'lastZen'>[]> => {
+  const users = await prisma.user.findMany({
+    where: {
+      streak: {
+        gt: 0,
+      },
+    },
+    select: {
+      id: true,
+      lastZen: true,
+    },
+  })
+
+  return users.filter((user) => {
+    const userLastZenTime = new Date(user.lastZen)
+    return !(
+      isSameHour(userLastZenTime, lastMirrorDate) &&
+      isSameMinute(userLastZenTime, lastMirrorDate)
+    )
+  })
+}
+
+const updateUserStreak = async (
+  userId: string,
+  streak: number,
+): Promise<void> => {
+  prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      streak,
+    },
+  })
+}
+
+const getLeaderboardUsers = async (
+  userNb: number,
+): Promise<Required<Prisma.UserCreateInput>[]> => {
+  return prisma.user.findMany({
+    where: {
+      streak: {
+        gt: 0,
+      },
+    },
+    orderBy: {
+      streak: 'desc',
+    },
+    take: userNb,
+  })
+}
+
 const execute = async (interaction: CommandInteraction): Promise<void> => {
   try {
     const hidden = interaction.options.get('hidden')?.value as boolean
     const userNb = interaction.options.get('user_nb')?.value as number | 10
+
     const leaderboardEntries = await getStreakLeaderboard(userNb)
+
     if (leaderboardEntries.length === 0) {
       interaction.reply('No one has any streaks yet!')
       return
@@ -47,39 +104,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
     await interaction.reply({ embeds: [embed], ephemeral: hidden })
   } catch (error) {
     logger.error('Error getting streak leaderboard:', error)
-  }
-}
-
-const getLastMirrorTime = (): Date => {
-  const date = new Date()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-
-  if (minute >= hour) {
-    return new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      hour,
-      hour,
-    )
-  } else {
-    if (hour === 0) {
-      return new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate() - 1,
-        23,
-        23,
-      )
-    }
-    return new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      hour - 1,
-      hour - 1,
-    )
+    interaction.reply('There was an error fetching the leaderboard.')
   }
 }
 
@@ -88,43 +113,16 @@ const getStreakLeaderboard = async (
 ): Promise<Array<{ name: string; value: string }>> => {
   const lastMirrorTime = getLastMirrorTime()
 
-  const usersToMark = await prisma.user.findMany({
-    where: {
-      lastZen: {
-        not: lastMirrorTime,
-      },
-      streak: {
-        gt: 0,
-      },
-    },
-  })
-
+  const usersToMark = await findUsersToMark(lastMirrorTime)
   for (const user of usersToMark) {
-    await prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        streak: 0,
-      },
-    })
+    await updateUserStreak(user.id, 0)
   }
 
-  const results = await prisma.user.findMany({
-    where: {
-      streak: {
-        gt: 0,
-      },
-    },
-    orderBy: {
-      streak: 'desc',
-    },
-    take: userNb,
-  })
+  const results = await getLeaderboardUsers(userNb)
 
   return results.map((result) => {
     const streak = result.streak
-    let emoji = ''
+    let emoji = '👃'
 
     if (streak >= 24) {
       emoji = '😴'
@@ -132,8 +130,6 @@ const getStreakLeaderboard = async (
       emoji = '🔥'
     } else if (streak >= 3) {
       emoji = '👨‍🚒'
-    } else {
-      emoji = '👃'
     }
 
     return {

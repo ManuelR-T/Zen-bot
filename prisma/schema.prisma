@@ -3,7 +3,6 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
 }
 
-
 datasource db {
   provider = "mongodb"
   url      = env("MONGO_URI")

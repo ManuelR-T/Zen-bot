@@ -73,7 +73,7 @@ const zenMessage = async (message: Message): Promise<void> => {
   await incZenCount(
     message.author.id,
     currentDate,
-    timeSinceLastMessage < 60 * (60 + 1) * 1000,
+    timeSinceLastMessage < 60 * 60 * 1000,
     user?.streak,
   )
 

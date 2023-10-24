@@ -57,11 +57,13 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
       `
       ${repoData.desc}
 
-      **${pluralize('Star', repoData.stars > 1)},: ${repoData.stars}** ⭐
-       | **${pluralize('Watcher', repoData.watchers > 1)}: ${
-         repoData.watchers
-       }** 👀
-       | **${pluralize('Issue', repoData.issues > 1)}: ${repoData.issues}** 🐞
+      **${pluralize('Star', repoData.stars > 1)}: ${
+        repoData.stars
+      }** ⭐ | **${pluralize('Watcher', repoData.watchers > 1)}: ${
+        repoData.watchers
+      }** 👀 | **${pluralize('Issue', repoData.issues > 1)}: ${
+        repoData.issues
+      }** 🐞
 
     `,
     )
@@ -72,7 +74,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
         'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
     })
     .setFooter({
-      text: `Last update: ${new Date(repoData.last_update).toDateString()}`, // Display the date of the last update in the footer
+      text: `Last update`,
       iconURL:
         'https://t3.ftcdn.net/jpg/04/30/88/00/360_F_430880079_xhvaasQ8uUeP7PyYLDY8jwZvQ3mekZFY.jpg',
     })

@@ -46,7 +46,7 @@ const zenReaction = async (
     await incZenCount(
       user.id,
       undefined,
-      timeSinceLastMessage < 60 * (60 + 1) * 1000,
+      timeSinceLastMessage < 60 * 60 * 1000,
       userDoc?.streak,
     )
   } catch (error) {

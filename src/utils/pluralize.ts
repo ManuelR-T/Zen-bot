@@ -1,4 +1,13 @@
-export const pluralize = (word: string, makePlural: boolean): string => {
+/**
+ * Converts a word to its plural form based on specific English grammar rules.
+ *
+ * @param {string} word - The word to be pluralized.
+ * @param {boolean} makePlural - A flag to determine if the word should be made plural. Defaults to true.
+ *
+ * @returns {string} - The plural form of the word. If `makePlural` is set to false,
+ *                     the original word is returned.
+ */
+export const pluralize = (word: string, makePlural: boolean = true): string => {
   if (!makePlural) {
     return word
   }
