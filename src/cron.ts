@@ -1,7 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client'
 import cron from 'node-cron'
-
-import logger from './utils/logger'
+import { logger } from 'utils'
 
 const prisma = new PrismaClient()
 

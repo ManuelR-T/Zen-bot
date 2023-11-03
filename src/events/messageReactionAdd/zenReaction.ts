@@ -1,9 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { MessageReaction, User } from 'discord.js'
+import { isMirrorTime, incZenCount, logger } from 'utils'
 
 import Config from '@/config'
-import { isMirrorTime, incZenCount } from '@/utils'
-import logger from '@/utils/logger'
 
 const prisma = new PrismaClient()
 

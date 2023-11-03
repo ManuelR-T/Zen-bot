@@ -1,17 +1,18 @@
 import fs from 'fs'
 import path from 'path'
 
+import { fileURLToPath } from 'bun'
 import { Events } from 'discord.js'
+import { logger } from 'utils'
 
 import { MyClient } from './types'
 
-import logger from '@/utils/logger'
-
 export const handleEvents = async (client: MyClient): Promise<void> => {
+  const dirName = path.dirname(fileURLToPath(new URL(import.meta.url)))
   const eventFolders = fs
-    .readdirSync(path.join(__dirname, 'events'))
+    .readdirSync(path.join(dirName, 'events'))
     .filter((folder) => Object.values(Events).includes(folder as Events))
-  const foldersPath = path.join(__dirname, 'events')
+  const foldersPath = path.join(dirName, 'events')
   for (const folder of eventFolders) {
     const eventsPath = path.join(foldersPath, folder)
     const eventFiles = fs
@@ -31,13 +32,17 @@ export const handleEvents = async (client: MyClient): Promise<void> => {
 }
 
 export const handleCommands = async (client: MyClient): Promise<void> => {
-  const commandFolders = fs.readdirSync(path.join(__dirname, 'commands'))
-  const foldersPath = path.join(__dirname, 'commands')
+  const dirName = path.dirname(fileURLToPath(new URL(import.meta.url)))
+
+  const commandFolders = fs.readdirSync(path.join(dirName, 'commands'))
+  const foldersPath = path.join(dirName, 'commands')
+
   for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder)
     const commandFiles = fs
       .readdirSync(commandsPath)
-      .filter((file) => file.endsWith('.js') || file.endsWith('.ts'))
+      .filter((file) => file === 'index.js' || file === 'index.ts')
+
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file)
       try {

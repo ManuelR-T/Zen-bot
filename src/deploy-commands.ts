@@ -1,23 +1,25 @@
 import { readdirSync } from 'fs'
-import { join } from 'path'
+import path, { join } from 'path'
 
+import { fileURLToPath } from 'bun'
 import { Routes } from 'discord-api-types/v10'
 import { REST } from 'discord.js'
+import { logger } from 'utils'
 
 import { Command } from './types'
-import logger from './utils/logger'
 
 import Config from '@/config'
 
 const commands: Command[] = []
-const foldersPath = join(__dirname, 'commands')
+const dirName = path.dirname(fileURLToPath(new URL(import.meta.url)))
+const foldersPath = join(dirName, 'commands')
 const commandFolders = readdirSync(foldersPath)
 
 async function loadCommands(): Promise<void> {
   for (const folder of commandFolders) {
     const commandsPath = join(foldersPath, folder)
-    const commandFiles = readdirSync(commandsPath).filter((file) =>
-      file.endsWith('.ts'),
+    const commandFiles = readdirSync(commandsPath).filter(
+      (file) => file === 'index.ts',
     )
 
     for (const file of commandFiles) {
@@ -27,6 +29,7 @@ async function loadCommands(): Promise<void> {
         const command = importCommand.default
 
         if ('data' in command && 'execute' in command) {
+          logger.info(`Loading ${command.data.name} command ...`)
           commands.push(command.data.toJSON())
         } else {
           logger.warn(

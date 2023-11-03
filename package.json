@@ -31,8 +31,11 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@types/node-cron": "^3.0.8",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "^6.5.0",
+    "bun-types": "^1.0.1",
+    "discord-api-types": "^0.37.56",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
@@ -42,9 +45,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "prettier": "^3.0.3",
     "prisma": "^5.4.2",
-    "typescript": "^5.2.2",
-    "@types/node-cron": "^3.0.8",
-    "discord-api-types": "^0.37.56",
-    "bun-types": "^1.0.1"
+    "typescript": "^5.2.2"
   }
 }

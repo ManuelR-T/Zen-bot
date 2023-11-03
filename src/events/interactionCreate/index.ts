@@ -1,7 +1,7 @@
 import { Events, Interaction } from 'discord.js'
+import { logger } from 'utils'
 
 import { MyClient, Event } from '@/types'
-import logger from '@/utils/logger'
 
 const listener = async (interaction: Interaction): Promise<void> => {
   if (!interaction.isChatInputCommand()) return

@@ -39,7 +39,7 @@ Before starting, ensure your machine has:
 
 2. **Install Dependencies:**
   ```bash
-    bun install
+    bun install && bun run db:update
   ```
 
 3. **Environment Configuration:**
@@ -59,6 +59,14 @@ Before starting, ensure your machine has:
   - **Stop**: Stop the database.
     ```bash
       bun run db:stop
+    ```
+  - **Update**: Update the database. Command to run after making changes to the database schema. (.prisma file)
+    ```bash
+      bun run db:update
+    ```
+  - **Check**: Open the database in the browser.
+    ```bash
+      bun run db:check
     ```
 
 - **Dev**: Begin the bot in development mode.
@@ -94,7 +102,9 @@ Before starting, ensure your machine has:
   - `prisma`: Handle MongoDB operations effectively.
 
 - **Development Tools:**
-  - Utilizes TypeScript, ESLint, and Prettier for development excellence.
+  - `Bun`: An all-in-one JavaScript runtime & toolkit & package manager.
+  - `TypeScript`: For static type-checking and better developer experience.
+  - `ESLint` & `Prettier`: For linting and formatting the codebase.
 
 ## 🤝 Contributing
 

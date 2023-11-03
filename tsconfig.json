@@ -15,10 +15,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["./*"],
-      "schemas/*": ["src/schemas/*"],
-      "commands/*": ["src/commands/*"],
-      "events/*": ["src/events/*"],
-      "utils/*": ["src/utils/*"],
+      "utils": ["src/utils/index"],
     }
   },
   "include": [

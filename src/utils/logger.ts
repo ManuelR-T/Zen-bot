@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston'
 
-const logger = createLogger({
+export const logger = createLogger({
   level: 'info',
   format: format.combine(
     format.colorize({ level: true }),
@@ -14,5 +14,3 @@ const logger = createLogger({
   ),
   transports: [new transports.Console()],
 })
-
-export default logger
