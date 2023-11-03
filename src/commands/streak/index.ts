@@ -32,12 +32,13 @@ const data = new SlashCommandBuilder()
 const execute = async (interaction: CommandInteraction): Promise<void> => {
   try {
     const hidden = interaction.options.get('hidden')?.value as boolean
+    await interaction.deferReply({ ephemeral: hidden })
     const userNb = interaction.options.get('user_nb')?.value as number | 10
 
     const leaderboardEntries = await getStreakLeaderboard(userNb)
 
     if (leaderboardEntries.length === 0) {
-      interaction.reply('No one has any streaks yet!')
+      interaction.followUp('No one has any streaks yet!')
       return
     }
 
@@ -48,10 +49,10 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
       defaultUserNb: 10,
     })
 
-    await interaction.reply({ embeds: [embed], ephemeral: hidden })
+    await interaction.followUp({ embeds: [embed], ephemeral: hidden })
   } catch (error) {
     logger.error('Error getting streak leaderboard:', error)
-    interaction.reply('There was an error fetching the leaderboard.')
+    interaction.followUp('There was an error fetching the leaderboard.')
   }
 }
 

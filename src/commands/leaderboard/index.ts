@@ -39,6 +39,7 @@ const data = new SlashCommandBuilder()
 const execute = async (interaction: CommandInteraction): Promise<void> => {
   try {
     const hidden = interaction.options.get('hidden')?.value as boolean
+    await interaction.deferReply({ ephemeral: hidden })
     const time =
       ((interaction.options.get('time')?.value as string) || undefined) ??
       'alltime'
@@ -59,7 +60,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
       color: 0x0099ff,
     })
 
-    await interaction.reply({ embeds: [embed], ephemeral: hidden })
+    await interaction.followUp({ embeds: [embed], ephemeral: hidden })
   } catch (error) {
     logger.error('Error getting leaderboard:', error)
   }

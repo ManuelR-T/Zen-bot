@@ -14,6 +14,8 @@ const data = new SlashCommandBuilder()
   .setDescription('Shows the github repo')
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
+  await interaction.deferReply()
+
   const repoData = await getRepoData('ManuelR-T', 'Zen-bot')
   const embed = new EmbedBuilder()
     .setColor('#24292e')
@@ -45,7 +47,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
     })
     .setTimestamp(new Date(repoData.last_update))
 
-  await interaction.reply({ embeds: [embed] })
+  await interaction.followUp({ embeds: [embed] })
 }
 
 export default { data, execute } as Command
