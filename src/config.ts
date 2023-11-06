@@ -12,7 +12,7 @@ export default class Config {
   static readonly TOKEN: string = Config.getEnv('TOKEN')
   static readonly CLIENT_ID: string = Config.getEnv('CLIENT_ID')
   static readonly ZEN = {
-    emojis: ['👃', '🐽', '☯', '🐉', '🐲'],
+    emojis: ['👃', '🐽', '☯️', '🐉', '🐲'],
     keywords: ['nez', 'zen', 'nose', 'noz', 'ttn'],
   }
 }
