@@ -123,6 +123,10 @@ class ZenMessageHandler {
         await incZenCount(user.id, currentDate, streak === 0)
       }
     })
+
+    collector.on('end', (collected) => {
+      logger.info(`${collected.size} zen collected`)
+    })
   }
 }
 

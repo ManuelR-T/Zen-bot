@@ -4,23 +4,23 @@ import { logger } from 'utils'
 import { MyClient, Event } from '@/types'
 
 const listener = async (interaction: Interaction): Promise<void> => {
-  if (!interaction.isChatInputCommand()) return
+  if (interaction.isChatInputCommand()) {
+    const client = interaction.client as MyClient
+    const command = client.commands.get(interaction.commandName)
 
-  const client = interaction.client as MyClient
-  const command = client.commands.get(interaction.commandName)
-
-  if (!command) {
-    logger.error(`No command matching ${interaction.commandName} was found.`)
-    return
-  }
-  try {
-    await command.execute(interaction)
-  } catch (error) {
-    logger.error(error)
-    await interaction.followUp({
-      content: 'There was an error while executing this command!',
-      ephemeral: true,
-    })
+    if (!command) {
+      logger.error(`No command matching ${interaction.commandName} was found.`)
+      return
+    }
+    try {
+      await command.execute(interaction)
+    } catch (error) {
+      logger.error(error)
+      await interaction.followUp({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      })
+    }
   }
 }
 
