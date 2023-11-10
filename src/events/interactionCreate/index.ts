@@ -1,9 +1,9 @@
 import { Events, Interaction } from 'discord.js'
 import { logger } from 'utils'
 
-import { handleCooldown } from './handleCooldown'
+import { Event, MyClient } from '@/types'
 
-import { MyClient, Event } from '@/types'
+import { handleCooldown } from './handleCooldown'
 
 const listener = async (interaction: Interaction): Promise<void> => {
   if (interaction.isChatInputCommand()) {

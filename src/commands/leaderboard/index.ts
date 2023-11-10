@@ -1,15 +1,15 @@
 import {
-  SlashCommandBuilder,
-  CommandInteraction,
-  ButtonBuilder,
   ActionRowBuilder,
+  ButtonBuilder,
   ButtonStyle,
+  CommandInteraction,
+  SlashCommandBuilder,
 } from 'discord.js'
-import { newEmbedLeaderboard, logger } from 'utils'
-
-import { getLeaderboard } from './getLeaderboard'
+import { logger, newEmbedLeaderboard } from 'utils'
 
 import { Command } from '@/types'
+
+import { getLeaderboard } from './getLeaderboard'
 
 const data = new SlashCommandBuilder()
   .setName('leaderboard')
@@ -20,7 +20,7 @@ const data = new SlashCommandBuilder()
       .setDescription('The time period to show the leaderboard for.')
       .setRequired(false)
       .addChoices(
-        { name: 'All time', value: 'alltime' },
+        { name: 'All time', value: 'all-time' },
         { name: 'This week', value: 'weekly' },
         { name: 'Today', value: 'daily' },
       ),
@@ -49,7 +49,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
     await interaction.deferReply({ ephemeral: hidden })
     const time =
       (interaction.options.get('time')?.value as string | undefined) ??
-      'alltime'
+      'all-time'
     const userNb =
       (interaction.options.get('user_nb')?.value as number | undefined) ?? 10
     const leaderboardEntries = await getLeaderboard(time, userNb)
@@ -62,7 +62,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
       title: '🏆 Zen Leaderboard 🏆',
       leaderboardEntries,
       time,
-      defaultTime: 'alltime',
+      defaultTime: 'all-time',
       userNb,
       defaultUserNb: 10,
       color: 0x0099ff,
@@ -99,7 +99,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
         title: '🏆 Zen Leaderboard 🏆',
         leaderboardEntries,
         time,
-        defaultTime: 'alltime',
+        defaultTime: 'all-time',
         userNb,
         defaultUserNb: 10,
         color: 0x0099ff,

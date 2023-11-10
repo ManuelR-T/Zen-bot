@@ -1,10 +1,10 @@
 import { GatewayIntentBits } from 'discord.js'
 
+import Config from '@/config'
+
 import cron from './cron'
 import { handleCommands, handleEvents } from './handlers'
 import { MyClient } from './types'
-
-import Config from '@/config'
 
 export const client = new MyClient({
   intents: [

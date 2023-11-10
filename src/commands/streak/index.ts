@@ -1,13 +1,13 @@
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js'
-import { newEmbedLeaderboard, getLastMirrorTime, logger } from 'utils'
+import { CommandInteraction, SlashCommandBuilder } from 'discord.js'
+import { getLastMirrorTime, logger, newEmbedLeaderboard } from 'utils'
+
+import { Command } from '@/types'
 
 import {
   findUsersToMark,
-  updateUserStreak,
   getLeaderboardUsers,
+  updateUserStreak,
 } from './dbOperations'
-
-import { Command } from '@/types'
 
 const data = new SlashCommandBuilder()
   .setName('streak')

@@ -1,5 +1,5 @@
-export * from './isMirorTime'
 export * from './embedLeaderboard'
 export * from './incZenCount'
-export * from './pluralize'
+export * from './isMirrorTime'
 export * from './logger'
+export * from './pluralize'

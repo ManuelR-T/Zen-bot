@@ -16,6 +16,7 @@
     "lint": "bunx eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts .",
     "lint:fix": "bunx eslint --config config/.eslintrc.yml --ignore-path config/.eslintignore --ext .ts . --fix"
   },
+  "private": true,
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -39,10 +40,9 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-n": "^16.0.2",
     "eslint-plugin-prettier": "latest",
     "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "prettier": "^3.0.3",
     "prisma": "^5.4.2",
     "typescript": "^5.2.2"

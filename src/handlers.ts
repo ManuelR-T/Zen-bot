@@ -1,8 +1,7 @@
+import { fileURLToPath } from 'bun'
+import { Collection, Events } from 'discord.js'
 import fs from 'fs'
 import path from 'path'
-
-import { fileURLToPath } from 'bun'
-import { Events, Collection } from 'discord.js'
 import { logger } from 'utils'
 
 import { MyClient } from './types'

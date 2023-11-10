@@ -1,9 +1,9 @@
 import { Events } from 'discord.js'
 import { logger } from 'utils'
 
-import { client } from '../../'
+import { Event, MyClient } from '@/types'
 
-import { MyClient, Event } from '@/types'
+import { client } from '../../'
 
 const setUserActivity = (): void => {
   if (!client.user) {

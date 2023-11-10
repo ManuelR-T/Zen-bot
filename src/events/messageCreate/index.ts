@@ -1,8 +1,8 @@
 import { Events, Message } from 'discord.js'
 
-import ZenMessageHandler from './zenMessageHandler'
-
 import { Event } from '@/types'
+
+import ZenMessageHandler from './zenMessageHandler'
 
 const zenMessageHandler = new ZenMessageHandler()
 

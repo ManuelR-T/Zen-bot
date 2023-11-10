@@ -1,14 +1,13 @@
+import { fileURLToPath } from 'bun'
+import { REST } from 'discord.js'
+import { Routes } from 'discord-api-types/v10'
 import { readdirSync } from 'fs'
 import path, { join } from 'path'
-
-import { fileURLToPath } from 'bun'
-import { Routes } from 'discord-api-types/v10'
-import { REST } from 'discord.js'
 import { logger } from 'utils'
 
-import { Command } from './types'
-
 import Config from '@/config'
+
+import { Command } from './types'
 
 const commands: Command[] = []
 const dirName = path.dirname(fileURLToPath(new URL(import.meta.url)))

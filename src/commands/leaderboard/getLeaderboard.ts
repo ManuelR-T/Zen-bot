@@ -6,21 +6,21 @@ export const getLeaderboard = async (
   time: string,
   userNb: number,
 ): Promise<Array<{ name: string; value: string }>> => {
-  let sortfield: keyof Prisma.UserCreateInput = 'count'
+  let sortField: keyof Prisma.UserCreateInput = 'count'
   if (time === 'weekly') {
-    sortfield = 'countWeek'
+    sortField = 'countWeek'
   } else if (time === 'daily') {
-    sortfield = 'countDay'
+    sortField = 'countDay'
   }
 
   const results = await prisma.user.findMany({
     where: {
-      [sortfield]: {
+      [sortField]: {
         gt: 0,
       },
     },
     orderBy: {
-      [sortfield]: 'desc',
+      [sortField]: 'desc',
     },
     take: userNb,
   })
@@ -28,7 +28,7 @@ export const getLeaderboard = async (
   return results.map((result, index) => {
     const rankIcon =
       index < 3 ? ['🥇', '🥈', '🥉'][index] : (index + 1).toString() + '.   '
-    const count = result[sortfield]
+    const count = result[sortField]
     return {
       name: `${rankIcon}          ${count} ${count === 1 ? 'time' : 'times'}`,
       value: `<@${result.id}> `,

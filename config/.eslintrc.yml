@@ -7,12 +7,14 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "import",
-    "prettier"
+    "simple-import-sort",
+    "promise",
+    "prettier",
   ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:promise/recommended",
   ],
   "rules": {
     "no-console": "error",
@@ -38,21 +40,10 @@
       "trailingUnderscore": "allow"
       }
     ],
-    "import/order": [
-      "error",
-      {
-        "groups": ["builtin", "external", "internal", ["parent", "sibling"], "index"],
-        "newlines-between": "always",
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        }
-      }
-    ],
-    "import/no-duplicates": "error",
-    "import/newline-after-import": "error",
-    "import/no-cycle": "error",
-    "import/no-self-import": "error",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "promise/always-return": "error",
+    "promise/no-nesting": "warn",
     "prettier/prettier": [
       "error",
       {

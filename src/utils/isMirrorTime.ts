@@ -1,9 +1,9 @@
 import {
   getHours,
   getMinutes,
-  subMinutes,
   setHours,
   setMinutes,
+  subMinutes,
 } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 

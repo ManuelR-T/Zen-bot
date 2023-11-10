@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, CacheType, Collection } from 'discord.js'
+import { CacheType, ChatInputCommandInteraction, Collection } from 'discord.js'
 
 import { Command } from '@/types'
 

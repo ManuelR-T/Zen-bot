@@ -1,13 +1,13 @@
 import {
-  SlashCommandBuilder,
-  EmbedBuilder,
   CommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
 } from 'discord.js'
 import { pluralize } from 'utils'
 
-import { getRepoData } from './getRepoData'
-
 import { Command } from '@/types'
+
+import { getRepoData } from './getRepoData'
 
 const data = new SlashCommandBuilder()
   .setName('github')
