@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { fileURLToPath } from 'bun'
-import { Events } from 'discord.js'
+import { Events, Collection } from 'discord.js'
 import { logger } from 'utils'
 
 import { MyClient } from './types'
@@ -49,6 +49,7 @@ export const handleCommands = async (client: MyClient): Promise<void> => {
         const { default: command } = await import(filePath)
         if ('data' in command && 'execute' in command) {
           client.commands.set(command.data.name, command)
+          client.cooldowns.set(command.data.name, new Collection())
         } else {
           logger.warn(
             `The command at ${filePath} is missing a required "data" or "execute" property.`,

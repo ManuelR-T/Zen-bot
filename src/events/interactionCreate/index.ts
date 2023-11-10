@@ -1,17 +1,22 @@
 import { Events, Interaction } from 'discord.js'
 import { logger } from 'utils'
 
+import { handleCooldown } from './handleCooldown'
+
 import { MyClient, Event } from '@/types'
 
 const listener = async (interaction: Interaction): Promise<void> => {
   if (interaction.isChatInputCommand()) {
     const client = interaction.client as MyClient
-    const command = client.commands.get(interaction.commandName)
 
+    const command = client.commands.get(interaction.commandName)
     if (!command) {
       logger.error(`No command matching ${interaction.commandName} was found.`)
       return
     }
+
+    if (handleCooldown(command, interaction, client.cooldowns)) return
+
     try {
       await command.execute(interaction)
     } catch (error) {

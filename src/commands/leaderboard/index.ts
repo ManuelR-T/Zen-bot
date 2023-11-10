@@ -79,6 +79,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
       new ButtonBuilder()
         .setCustomId(`leaderboard:refresh`)
         .setLabel('Refresh')
+        .setEmoji('🔄')
         .setStyle(ButtonStyle.Primary),
     )
 
@@ -120,4 +121,4 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
   }
 }
 
-export default { data, execute } as Command
+export default { data, execute, cooldown: 5 } as Command

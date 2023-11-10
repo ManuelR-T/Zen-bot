@@ -7,6 +7,7 @@ import {
 
 export type Command = {
   data: SlashCommandBuilder
+  cooldown?: number
   execute: (interaction: CommandInteraction) => Promise<void>
 }
 
@@ -18,4 +19,5 @@ export type Event = {
 
 export class MyClient extends Client {
   commands = new Collection<string, Command>()
+  cooldowns = new Collection<string, Collection<string, number>>()
 }

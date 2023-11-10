@@ -24,10 +24,20 @@
     "@typescript-eslint/explicit-function-return-type": ["error", {
         "allowExpressions": true
     }],
-    "@typescript-eslint/naming-convention": ["error", {
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
         "selector": "variable",
         "format": ["camelCase"]
-    }],
+      },
+      {
+      "selector": "variable",
+      "modifiers": ["const", "global"],
+      "format": ["camelCase", "UPPER_CASE"],
+      "leadingUnderscore": "allow",
+      "trailingUnderscore": "allow"
+      }
+    ],
     "import/order": [
       "error",
       {
