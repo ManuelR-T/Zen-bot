@@ -3,44 +3,10 @@ import {
   ButtonBuilder,
   ButtonStyle,
   CommandInteraction,
-  SlashCommandBuilder,
 } from 'discord.js'
 import { logger, newEmbedLeaderboard } from 'utils'
 
-import { Command } from '@/types'
-
 import { getLeaderboard } from './getLeaderboard'
-
-const data = new SlashCommandBuilder()
-  .setName('leaderboard')
-  .setDescription('Show the Zen leaderboard.')
-  .addStringOption((option) =>
-    option
-      .setName('time')
-      .setDescription('The time period to show the leaderboard for.')
-      .setRequired(false)
-      .addChoices(
-        { name: 'All time', value: 'all-time' },
-        { name: 'This week', value: 'weekly' },
-        { name: 'Today', value: 'daily' },
-      ),
-  )
-  .addNumberOption((option) =>
-    option
-      .setName('user_nb')
-      .setDescription(
-        'The number of users to show in the leaderboard. Min 1, max 20.',
-      )
-      .setRequired(false)
-      .setMaxValue(20)
-      .setMinValue(1),
-  )
-  .addBooleanOption((option) =>
-    option
-      .setName('hidden')
-      .setDescription('Hide the command from other users.')
-      .setRequired(false),
-  )
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
   try {
@@ -121,4 +87,4 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
   }
 }
 
-export default { data, execute, cooldown: 5 } as Command
+export default execute
