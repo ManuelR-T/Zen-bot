@@ -6,6 +6,7 @@ import {
 } from 'discord.js'
 import { logger, newEmbedLeaderboard } from 'utils'
 
+import addCollector from './addCollector'
 import { getLeaderboard } from './getLeaderboard'
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
@@ -55,33 +56,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
       components: [row],
     })
 
-    const collector = message.createMessageComponentCollector({
-      time: 120000,
-    })
-
-    collector.on('collect', async (i) => {
-      const leaderboardEntries = await getLeaderboard(time, userNb)
-      const embed = newEmbedLeaderboard({
-        title: '🏆 Zen Leaderboard 🏆',
-        leaderboardEntries,
-        time,
-        defaultTime: 'all-time',
-        userNb,
-        defaultUserNb: 10,
-        color: 0x0099ff,
-      })
-      await i.update({
-        embeds: [embed],
-        components: [row],
-      })
-    })
-
-    collector.on('end', async () => {
-      row.components[0].setDisabled(true)
-      await message.edit({
-        components: [row],
-      })
-    })
+    await addCollector(message, row, time, userNb)
   } catch (error) {
     logger.error('Error getting leaderboard:', error)
   }
