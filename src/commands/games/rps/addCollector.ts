@@ -12,36 +12,22 @@ function isChoice(choice: string): choice is Choice {
   return ['rock', 'paper', 'scissors'].includes(choice)
 }
 
-const rpsResolver = (player1Choice: string, player2Choice: string): string => {
-  if (player1Choice === player2Choice) {
-    return 'tie'
+const rpsResolver = (
+  player1Choice: string,
+  player2Choice: string,
+): 'tie' | 'player1' | 'player2' => {
+  if (player1Choice === player2Choice) return 'tie'
+
+  const winsAgainst = {
+    rock: 'scissors',
+    paper: 'rock',
+    scissors: 'paper',
   }
 
-  if (player1Choice === 'rock') {
-    if (player2Choice === 'paper') {
-      return 'player2'
-    } else {
-      return 'player1'
-    }
-  }
-
-  if (player1Choice === 'paper') {
-    if (player2Choice === 'scissors') {
-      return 'player2'
-    } else {
-      return 'player1'
-    }
-  }
-
-  if (player1Choice === 'scissors') {
-    if (player2Choice === 'rock') {
-      return 'player2'
-    } else {
-      return 'player1'
-    }
-  }
-
-  return 'tie'
+  return winsAgainst[player1Choice as keyof typeof winsAgainst] ===
+    player2Choice
+    ? 'player1'
+    : 'player2'
 }
 
 export default async (
@@ -82,7 +68,6 @@ export default async (
   collector.on('end', async () => {
     row.components.forEach((component) => component.setDisabled(true))
 
-    // Set player2 to the bot user if it's not already set
     player2 = player2 ?? message.client.user
 
     const emojiMap: { [key in Choice]: string } = {
@@ -98,7 +83,6 @@ export default async (
     if (player1Choice && player2Choice) {
       const result = rpsResolver(player1Choice, player2Choice)
 
-      // Adding some flair to the result announcement
       const winnerAnnouncement =
         result === 'tie'
           ? "It's an epic stalemate! 🌟"
@@ -107,7 +91,6 @@ export default async (
           : `🎉 Victory for ${player2}! 🎉`
       description = `🚀 The battle commences! 🚀\n\n${player1} summons ${player1Emoji} \nagainst ${player2}'s ${player2Emoji}!\n\n🌌 ${winnerAnnouncement}`
     } else {
-      // Timeout message with a twist
       description = `⏳ Time has warped the battlefield...\n${player1} conjured ${player1Emoji}, \nwhile ${player2} conjured ${player2Emoji}.\n\n🌀 The cosmos have declared a timeout! 🌀`
     }
 
