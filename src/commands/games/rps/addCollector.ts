@@ -53,8 +53,8 @@ export default async (
       return
     }
 
+    await i.deferUpdate()
     if (player1Choice && player2Choice) {
-      await i.deferUpdate()
       collector.stop()
     }
   })
@@ -73,7 +73,7 @@ export default async (
     const player1Emoji = player1Choice ? emojiMap[player1Choice] : '❓'
     const player2Emoji = player2Choice ? emojiMap[player2Choice] : '❓'
 
-    let description = `⏳ Time has warped the battlefield...\n${player1} conjured ${player1Emoji}, \nwhile ${player2} conjured ${player2Emoji}.\n\n🌀 The cosmos have declared a timeout! 🌀`
+    let description = `⏳ Time has warped the battlefield...\n${player1} conjured ${player1Emoji}, \nwhile ${player2} conjured ${player2Emoji}.\n\n🌀 The cosmos has declared a timeout! 🌀`
 
     if (player1Choice && player2Choice) {
       const result = rpsResolver(player1Choice, player2Choice)

@@ -56,9 +56,7 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
     const embed = new EmbedBuilder()
       .setTitle('Rock Paper Scissors')
       .setDescription(
-        `${interaction.user} vs <@${
-          user ?? interaction.client.user.valueOf()
-        }> \n
+        `${interaction.user} vs ${user ?? interaction.client.user} \n
             Choose your weapon! \nThe game will end <t:${
               Math.floor(interaction.createdTimestamp / 1000) + 60
             }:R>`,
