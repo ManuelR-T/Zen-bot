@@ -61,6 +61,7 @@ export default async (
     }
 
     if (player1Choice && player2Choice) {
+      await i.deferUpdate()
       collector.stop()
     }
   })
