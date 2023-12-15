@@ -22,9 +22,13 @@ export const handleEvents = async (client: MyClient): Promise<void> => {
       const { default: event } = await import(filePath)
 
       if (event.once) {
-        client.once(event.name, (...args) => event.listener(...args))
+        client.once(event.name, (client, ...args) =>
+          event.listener(client, ...args),
+        )
       } else {
-        client.on(event.name, (...args) => event.listener(...args))
+        client.on(event.name, (client, ...args) =>
+          event.listener(client, ...args),
+        )
       }
     }
   }

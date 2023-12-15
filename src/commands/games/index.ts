@@ -24,4 +24,4 @@ const execute = async (interaction: CommandInteraction): Promise<void> => {
   await subCommandHandler(interaction, subcommandMap)
 }
 
-export default { data, execute, cooldown: 5 } as Command
+export default { data, execute, cooldown: 10 } as Command

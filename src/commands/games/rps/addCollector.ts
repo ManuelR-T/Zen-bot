@@ -1,30 +1,22 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonStyle,
   EmbedBuilder,
   Message,
   User,
 } from 'discord.js'
 
-type Choice = 'rock' | 'paper' | 'scissors'
+import { Nullable } from '@/types'
+import { MyClient } from '@/types'
 
-function isChoice(choice: string): choice is Choice {
+import { sendRps } from '.'
+import { RpsPlayer, RpsPlayerReady } from './rpsPlayer'
+import { Choice } from './types'
+
+function isChoice(choice: Nullable<string>): choice is Choice {
+  if (!choice) return false
   return ['rock', 'paper', 'scissors'].includes(choice)
-}
-
-const rpsResolver = (
-  player1Choice: Choice,
-  player2Choice: Choice,
-): 'tie' | 'player1' | 'player2' => {
-  if (player1Choice === player2Choice) return 'tie'
-
-  const winsAgainst = {
-    rock: 'scissors',
-    paper: 'rock',
-    scissors: 'paper',
-  }
-
-  return winsAgainst[player1Choice] === player2Choice ? 'player1' : 'player2'
 }
 
 export default async (
@@ -32,63 +24,85 @@ export default async (
   row: ActionRowBuilder<ButtonBuilder>,
   embed: EmbedBuilder,
   player1: User,
-  player2: User | null,
+  player2: Nullable<User>,
+  client: MyClient,
 ): Promise<void> => {
+  const p1 = new RpsPlayer(player1, null, client)
+  const p2 = new RpsPlayer(player2, null, client)
   const collector = message.createMessageComponentCollector({ time: 60000 })
-  let player1Choice: Choice | null = null
-  let player2Choice: Choice | null = null
+  const rowRetry = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId('rps:retry')
+      .setLabel(`Retry${p2.user.bot === false ? ' (0/2)' : ''}`)
+      .setEmoji('🔄')
+      .setStyle(ButtonStyle.Secondary),
+  )
 
   collector.on('collect', async (i) => {
     if (i.user.bot || !isChoice(i.customId)) return
 
-    if (i.user.id === player1.id) {
-      player1Choice = i.customId
-      if (!player2) {
-        const choices: Choice[] = ['rock', 'paper', 'scissors']
-        player2Choice = choices[Math.floor(Math.random() * choices.length)]
-      }
-    } else if (player2 && i.user.id === player2.id) {
-      player2Choice = i.customId
+    if (i.user === player1) {
+      p1.choice = i.customId
+    } else if (player2 && i.user === player2) {
+      p2.choice = i.customId
     } else {
       return
     }
 
     await i.deferUpdate()
-    if (player1Choice && player2Choice) {
-      collector.stop()
-    }
+    if (p1.choice && p2.choice) collector.stop()
   })
 
   collector.on('end', async () => {
+    const collectorRetry = message.createMessageComponentCollector({
+      time: 60000,
+    })
+
+    collectorRetry.on('collect', async (i) => {
+      if (i.user.bot || i.customId !== 'rps:retry') return
+
+      if (i.user === p1.user) {
+        p1.retry = true
+      } else if (p2 && i.user === p2.user) {
+        p2.retry = true
+      } else {
+        return
+      }
+      await i.deferUpdate()
+      if (p1.retry && (p2.retry || p2.user?.bot)) collectorRetry.stop()
+    })
+
+    collectorRetry.on('end', async () => {
+      rowRetry.components.forEach((component) => component.setDisabled(true))
+      sendRps({ type: 'Retry', p2: player2, message, p1: player1 }, client)
+    })
+
     row.components.forEach((component) => component.setDisabled(true))
 
-    player2 = player2 ?? message.client.user
-
-    const emojiMap = {
-      rock: '🪨',
-      paper: '📜',
-      scissors: '✂️',
+    p1.refreshEmoji()
+    p2.refreshEmoji()
+    if (p1.isReady() && p2.isReady()) {
+      await message.edit({
+        embeds: [embed.setDescription(getEndGameDesc(p1, p2))],
+        components: [row, rowRetry],
+      })
+    } else {
+      const desc = `⏳ Time has warped the battlefield...\n${p1.user} conjured ${p1.emoji}, \nwhile ${p2.user} conjured ${p2.emoji}.\n\n🌀 The cosmos has declared a timeout! 🌀`
+      await message.edit({
+        embeds: [embed.setDescription(desc)],
+        components: [row, rowRetry],
+      })
     }
-
-    const player1Emoji = player1Choice ? emojiMap[player1Choice] : '❓'
-    const player2Emoji = player2Choice ? emojiMap[player2Choice] : '❓'
-
-    let description = `⏳ Time has warped the battlefield...\n${player1} conjured ${player1Emoji}, \nwhile ${player2} conjured ${player2Emoji}.\n\n🌀 The cosmos has declared a timeout! 🌀`
-
-    if (player1Choice && player2Choice) {
-      const result = rpsResolver(player1Choice, player2Choice)
-
-      const winnerAnnouncement =
-        result === 'tie'
-          ? "It's an epic stalemate! 🌟"
-          : `🎉 Victory for ${result === 'player1' ? player1 : player2}! 🎉`
-
-      description = `🚀 The battle commences! 🚀\n\n${player1} summons ${player1Emoji} \nagainst ${player2}'s ${player2Emoji}!\n\n🌌 ${winnerAnnouncement}`
-    }
-
-    await message.edit({
-      embeds: [embed.setDescription(description)],
-      components: [row],
-    })
   })
+}
+
+const getEndGameDesc = (p1: RpsPlayerReady, p2: RpsPlayerReady): string => {
+  const result = p1.rpsResolver(p2)
+
+  const winnerAnnouncement =
+    result === 'tie'
+      ? "It's an epic stalemate! 🌟"
+      : `🎉 Victory for ${result === 'player1' ? p1.user : p2.user}! 🎉`
+
+  return `🚀 The battle commences! 🚀\n\n${p1.user} summons ${p1.emoji} \nagainst ${p2.user}'s ${p2.emoji}!\n\n🌌 ${winnerAnnouncement}`
 }

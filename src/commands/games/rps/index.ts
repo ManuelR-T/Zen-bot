@@ -5,73 +5,102 @@ import {
   CommandInteraction,
   EmbedBuilder,
 } from 'discord.js'
-import { logger } from 'utils'
+
+import { MyClient } from '@/types'
 
 import addCollector from './addCollector'
+import { isFirstProps, sendRpsProps } from './types'
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
-  try {
-    let user = interaction.options.getUser('user')
+  let user = interaction.options.getUser('user')
+  const client = interaction.client as MyClient
 
-    if (user === interaction.user) {
-      await interaction.reply({
-        content: "You can't play against yourself!",
-        ephemeral: true,
-      })
-      return
-    }
+  if (user === interaction.user) {
+    await interaction.reply({
+      content: "You can't play against yourself!",
+      ephemeral: true,
+    })
+    return
+  }
+  if (user === interaction.client.user) {
+    user = null
+  }
+  if (user?.bot) {
+    await interaction.reply({
+      content: "You can't play against another bot than me!",
+      ephemeral: true,
+    })
+    return
+  }
+  await interaction.deferReply({ ephemeral: false })
+  await sendRps({ type: 'First', p2: user, interaction }, client)
+}
 
-    if (user === interaction.client.user) {
-      user = null
-    }
+export const sendRps = async (
+  props: sendRpsProps,
+  client: MyClient,
+): Promise<void> => {
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`rock`)
+      .setLabel('Rock')
+      .setEmoji('🪨')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId(`paper`)
+      .setLabel('Paper')
+      .setEmoji('📄')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId(`scissors`)
+      .setLabel('Scissors')
+      .setEmoji('✂️')
+      .setStyle(ButtonStyle.Primary),
+  )
 
-    if (user?.bot) {
-      await interaction.reply({
-        content: "You can't play against another bot than me!",
-        ephemeral: true,
-      })
-      return
-    }
-
-    await interaction.deferReply({ ephemeral: false })
-
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder()
-        .setCustomId(`rock`)
-        .setLabel('Rock')
-        .setEmoji('🪨')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId(`paper`)
-        .setLabel('Paper')
-        .setEmoji('📄')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId(`scissors`)
-        .setLabel('Scissors')
-        .setEmoji('✂️')
-        .setStyle(ButtonStyle.Primary),
-    )
-
+  if (isFirstProps(props)) {
     const embed = new EmbedBuilder()
       .setTitle('Rock Paper Scissors')
       .setDescription(
-        `${interaction.user} vs ${user ?? interaction.client.user} \n
+        `${props.interaction.user} vs ${
+          props.p2 ?? props.interaction.client.user
+        } \n
             Choose your weapon! \nThe game will end <t:${
-              Math.floor(interaction.createdTimestamp / 1000) + 60
+              Math.floor(props.interaction.createdTimestamp / 1000) + 60
             }:R>`,
       )
       .setTimestamp()
       .setColor(0x0099ff)
 
-    const message = await interaction.followUp({
+    const message = await props.interaction.followUp({
       embeds: [embed],
       components: [row],
     })
+    await addCollector(
+      message,
+      row,
+      embed,
+      props.interaction.user,
+      props.p2,
+      client,
+    )
+  } else {
+    const embed = new EmbedBuilder()
+      .setTitle('Rock Paper Scissors')
+      .setDescription(
+        `${props.p1} vs ${props.p2 ?? client.user} \n
+            Choose your weapon! \nThe game will end <t:${
+              Math.floor(new Date().valueOf() / 1000) + 60
+            }:R>`,
+      )
+      .setTimestamp()
+      .setColor(0x0099ff)
 
-    await addCollector(message, row, embed, interaction.user, user)
-  } catch (error) {
-    logger.error('Error rps command:', error)
+    const message = await props.message.edit({
+      embeds: [embed],
+      components: [row],
+    })
+    await addCollector(message, row, embed, props.p1, props.p2, client)
   }
 }
 

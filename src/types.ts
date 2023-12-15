@@ -21,3 +21,5 @@ export class MyClient extends Client {
   commands = new Collection<string, Command>()
   cooldowns = new Collection<string, Collection<string, number>>()
 }
+
+export type Nullable<T> = T | null

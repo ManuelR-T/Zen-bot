@@ -6,7 +6,7 @@ import cron from './cron'
 import { handleCommands, handleEvents } from './handlers'
 import { MyClient } from './types'
 
-export const client = new MyClient({
+const client = new MyClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,

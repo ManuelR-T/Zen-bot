@@ -42,7 +42,16 @@ async function loadCommands(): Promise<void> {
   }
 }
 
-const rest = new REST().setToken(Config.TOKEN)
+const sendCommandRequest = async (): Promise<unknown[]> => {
+  const rest = new REST().setToken(Config.TOKEN)
+  const response = await rest.put(
+    Routes.applicationCommands(Config.CLIENT_ID),
+    {
+      body: commands,
+    },
+  )
+  return response as Array<unknown>
+}
 
 const refreshApplicationCommands = async (): Promise<void> => {
   try {
@@ -62,14 +71,4 @@ const refreshApplicationCommands = async (): Promise<void> => {
   }
 }
 
-const sendCommandRequest = async (): Promise<unknown[]> => {
-  const response = await rest.put(
-    Routes.applicationCommands(Config.CLIENT_ID),
-    {
-      body: commands,
-    },
-  )
-  return response as Array<unknown>
-}
-
-refreshApplicationCommands()
+await refreshApplicationCommands()
