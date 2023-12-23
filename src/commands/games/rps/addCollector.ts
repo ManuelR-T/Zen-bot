@@ -4,7 +4,6 @@ import {
   ButtonStyle,
   EmbedBuilder,
   Message,
-  User,
 } from 'discord.js'
 
 import { Nullable } from '@/types'
@@ -23,12 +22,10 @@ export default async (
   message: Message,
   row: ActionRowBuilder<ButtonBuilder>,
   embed: EmbedBuilder,
-  player1: User,
-  player2: Nullable<User>,
+  p1: RpsPlayer,
+  p2: RpsPlayer,
   client: MyClient,
 ): Promise<void> => {
-  const p1 = new RpsPlayer(player1, null, client)
-  const p2 = new RpsPlayer(player2, null, client)
   const collector = message.createMessageComponentCollector({ time: 60000 })
   const rowRetry = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
@@ -41,9 +38,9 @@ export default async (
   collector.on('collect', async (i) => {
     if (i.user.bot || !isChoice(i.customId)) return
 
-    if (i.user === player1) {
+    if (i.user === p1.user) {
       p1.choice = i.customId
-    } else if (player2 && i.user === player2) {
+    } else if (p2.user && i.user === p2.user) {
       p2.choice = i.customId
     } else {
       return
@@ -63,8 +60,10 @@ export default async (
 
       if (i.user === p1.user) {
         p1.retry = true
+        rowRetry.components[0].setLabel('Retry (1/2)')
       } else if (p2 && i.user === p2.user) {
         p2.retry = true
+        rowRetry.components[0].setLabel('Retry (1/2)')
       } else {
         return
       }
@@ -74,7 +73,7 @@ export default async (
 
     collectorRetry.on('end', async () => {
       rowRetry.components.forEach((component) => component.setDisabled(true))
-      sendRps({ type: 'Retry', p2: player2, message, p1: player1 }, client)
+      sendRps({ type: 'Retry', p2, message, p1 }, client)
     })
 
     row.components.forEach((component) => component.setDisabled(true))
@@ -99,10 +98,12 @@ export default async (
 const getEndGameDesc = (p1: RpsPlayerReady, p2: RpsPlayerReady): string => {
   const result = p1.rpsResolver(p2)
 
+  const scoreAnnouncement = `The score is now ${p1.score} - ${p2.score}!`
+
   const winnerAnnouncement =
     result === 'tie'
       ? "It's an epic stalemate! 🌟"
       : `🎉 Victory for ${result === 'player1' ? p1.user : p2.user}! 🎉`
 
-  return `🚀 The battle commences! 🚀\n\n${p1.user} summons ${p1.emoji} \nagainst ${p2.user}'s ${p2.emoji}!\n\n🌌 ${winnerAnnouncement}`
+  return `🚀 The battle commences! 🚀\n\n${p1.user} summons ${p1.emoji} \nagainst ${p2.user}'s ${p2.emoji}!\n\n🌌 ${winnerAnnouncement}\n ${scoreAnnouncement}`
 }

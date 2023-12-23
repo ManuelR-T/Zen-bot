@@ -9,6 +9,7 @@ import {
 import { MyClient } from '@/types'
 
 import addCollector from './addCollector'
+import { RpsPlayer } from './rpsPlayer'
 import { isFirstProps, sendRpsProps } from './types'
 
 const execute = async (interaction: CommandInteraction): Promise<void> => {
@@ -59,6 +60,8 @@ export const sendRps = async (
   )
 
   if (isFirstProps(props)) {
+    const p1 = new RpsPlayer(props.interaction.user, null, client)
+    const p2 = new RpsPlayer(props.p2, null, client)
     const embed = new EmbedBuilder()
       .setTitle('Rock Paper Scissors')
       .setDescription(
@@ -76,19 +79,12 @@ export const sendRps = async (
       embeds: [embed],
       components: [row],
     })
-    await addCollector(
-      message,
-      row,
-      embed,
-      props.interaction.user,
-      props.p2,
-      client,
-    )
+    await addCollector(message, row, embed, p1, p2, client)
   } else {
     const embed = new EmbedBuilder()
       .setTitle('Rock Paper Scissors')
       .setDescription(
-        `${props.p1} vs ${props.p2 ?? client.user} \n
+        `${props.p1.user} vs ${props.p2.user ?? client.user} \n
             Choose your weapon! \nThe game will end <t:${
               Math.floor(new Date().valueOf() / 1000) + 60
             }:R>`,

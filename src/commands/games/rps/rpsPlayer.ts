@@ -9,6 +9,7 @@ export class RpsPlayer {
   public choice: Nullable<Choice> = null
   public emoji?: RpsEmoji
   public retry = false
+  public score = 0
   private readonly emojiMap = new Map<Choice, RpsEmoji>([
     ['rock', '🪨'],
     ['paper', '📜'],
@@ -39,9 +40,14 @@ export class RpsPlayer {
     if (!this.isReady() || !other.isReady())
       throw new Error('Both players must be ready to resolve the game.')
 
-    return this.gameOutcomeMatrix[this.choices.indexOf(this.choice)][
-      this.choices.indexOf(other.choice)
-    ]
+    const outcome =
+      this.gameOutcomeMatrix[this.choices.indexOf(this.choice)][
+        this.choices.indexOf(other.choice)
+      ]
+    if (outcome === 'player1') this.score++
+    else if (outcome === 'player2') other.score++
+
+    return outcome
   }
 
   constructor(
