@@ -81,6 +81,9 @@ export const sendRps = async (
     })
     await addCollector(message, row, embed, p1, p2, client)
   } else {
+    props.p1.reset()
+    props.p2.reset()
+    props.p2.setRandomChoice()
     const embed = new EmbedBuilder()
       .setTitle('Rock Paper Scissors')
       .setDescription(

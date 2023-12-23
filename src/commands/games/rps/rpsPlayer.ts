@@ -31,7 +31,13 @@ export class RpsPlayer {
     return this.user !== null && this.choice !== null && this.emoji !== '❓'
   }
 
-  private setRandomChoice(): void {
+  public reset(): void {
+    this.choice = null
+    this.emoji = undefined
+    this.retry = false
+  }
+
+  public setRandomChoice(): void {
     const choices: Choice[] = ['rock', 'paper', 'scissors']
     this.choice = choices[Math.floor(Math.random() * choices.length)]
   }

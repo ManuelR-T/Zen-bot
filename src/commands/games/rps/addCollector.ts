@@ -59,21 +59,38 @@ export default async (
       if (i.user.bot || i.customId !== 'rps:retry') return
 
       if (i.user === p1.user) {
-        p1.retry = true
-        rowRetry.components[0].setLabel('Retry (1/2)')
+        if (!p1.retry) {
+          p1.retry = true
+          rowRetry.components[0].setLabel('Retry (1/2)')
+        } else {
+          await i.deferUpdate()
+          return
+        }
       } else if (p2 && i.user === p2.user) {
-        p2.retry = true
-        rowRetry.components[0].setLabel('Retry (1/2)')
+        if (!p2.retry) {
+          p2.retry = true
+          rowRetry.components[0].setLabel('Retry (1/2)')
+        } else {
+          await i.deferUpdate()
+          return
+        }
       } else {
+        await i.followUp({
+          content: 'You cannot retry for someone else!',
+          ephemeral: true,
+        })
         return
       }
-      await i.deferUpdate()
+      await message.edit({
+        components: [row, rowRetry],
+      })
       if (p1.retry && (p2.retry || p2.user?.bot)) collectorRetry.stop()
     })
 
     collectorRetry.on('end', async () => {
       rowRetry.components.forEach((component) => component.setDisabled(true))
-      sendRps({ type: 'Retry', p2, message, p1 }, client)
+      if (p1.retry && (p2.retry || p2.user?.bot))
+        sendRps({ type: 'Retry', p2, message, p1 }, client)
     })
 
     row.components.forEach((component) => component.setDisabled(true))
